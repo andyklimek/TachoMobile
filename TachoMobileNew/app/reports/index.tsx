@@ -20,7 +20,15 @@ const ReportsScreen = () => {
   const { checkAuth } = useAuth();
 
   useEffect(() => {
-    checkAuth();
+    const verifyAuth = async () => {
+      try {
+        await checkAuth();
+      } catch (error) {
+        navigation.navigate('login');
+      }
+    };
+
+    verifyAuth();
   }, []);
 
   const reportsData = data?.data;

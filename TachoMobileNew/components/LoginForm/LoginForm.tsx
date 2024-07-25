@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, TextInput, Text } from 'react-native';
 import { Controller } from 'react-hook-form';
 import { styled } from 'nativewind';
@@ -9,7 +9,6 @@ import { schema, defaultValues } from './utils';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@/context/AuthContext';
 
-// Define styled components
 const StyledView = styled(View);
 const StyledTextInput = styled(TextInput);
 const StyledButton = styled(Button);
@@ -18,16 +17,22 @@ const StyledText = styled(Text);
 
 const LoginForm = ({ navigation }) => {
   const { control, handleSubmit, errors } = useCustomForm(schema, defaultValues);
+  const [error, setError] = useState(false);
   const { navigate } = useNavigation();
   const { login } = useAuth();
 
   const onSubmit = async (data: any) => {
-    await login(data.username, data.password);
+    try {
+      await login(data.username, data.password);
+      navigation.navigate('dashboard');
+    } catch (error) {
+      setError(true);
+    }
   };
 
   return (
     <StyledView className="w-full p-4">
-      {(errors.password || errors.username) && (
+      {(errors.password || errors.username || error) && (
         <StyledText className="text-red-500 text-center font-semibold mb-4">
           Niepoprawny nazw użytkownika i/lub hasło
         </StyledText>

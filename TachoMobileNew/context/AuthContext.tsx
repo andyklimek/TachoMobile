@@ -16,7 +16,7 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 const AuthProvider: React.FC = ({ children }) => {
   const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -44,9 +44,8 @@ const AuthProvider: React.FC = ({ children }) => {
       await AsyncStorage.setItem('access', token);
       axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       setUser(jwtDecode(token));
-      navigation.navigate('dashboard');
     } catch (error) {
-      console.error('Login error', error.message);
+      return Promise.reject(error);
     } finally {
       setLoading(false);
     }
@@ -67,12 +66,11 @@ const AuthProvider: React.FC = ({ children }) => {
         await axiosInstance.post('/auth/verify/');
         setUser(jwtDecode(token));
       } else {
-        setUser(null);
-        navigation.navigate('login');
+        throw new Error('No token');
       }
     } catch (error) {
       setUser(null);
-      navigation.navigate('login');
+      console.error('Authentication check failed', error);
     }
   };
 
