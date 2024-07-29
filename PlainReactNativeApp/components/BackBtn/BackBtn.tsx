@@ -16,7 +16,7 @@ const BackBtn = () => {
 
   return (
     <StyledTouchableOpacity
-      className="btn absolute left-5 "
+      className="btn z-50 absolute left-0"
       onPress={handlePress}>
       <StyledView>
         {<ChevronLeft className="text-darkBlue" size={40} />}

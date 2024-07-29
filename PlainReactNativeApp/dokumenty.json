@@ -1,0 +1,48 @@
+{
+    "detail": "Success",
+    "data": {
+        "id": 1,
+        "user_id": 1,
+        "updated_at": "2024-07-19T17:47:49.552126Z",
+        "icc_file": {
+            "id": 1,
+            "card_extended_serial_number": "01240E2601169089",
+            "card_approval_number": "6531203232312020",
+            "ic_identifier": "0000",
+            "embedder_ic_assembler_id": "504C383978",
+            "card_personalizer_id": "00"
+        },
+        "ic_file": {
+            "id": 1,
+            "ic_serial_number": "000074BC",
+            "ic_manufacturing_reference": "A3144307"
+        },
+        "card_certificate": {
+            "id": 1,
+            "certificate": "B21FD0E05EE94269DEC08FBB9877C2131CA97C13DF033B6238D90786A7976FF1ECA8D922FD9A9D685E147ADEF29B9536BB900840FE6C6091BF205992701CA89F14D47A6F4F5F940F3D5F0BD982600FAA701AB78E1963FF84311CF6BE40F46389E94508FB78F2B48E6E60CF8AF3B934893DDE9CE46EA9C491B4619D7F7B8C11A87AAD8BFE0E0CE137C02CDF08872EC677071DF38EDF13CE6A26A6C87643A1B427241971BE77CD9A72FEF4C7947776111043B7000000000001000128504C2010FFFF01"
+        },
+        "card_ca_certificate": {
+            "id": 1,
+            "certificate": "E15FAA30ADCF8F4051B2D6A7AD6F47C5BE75291BCAA9D6874A909D985E64CD68846C619EAA0662DA985AA2553072E5D0DF5E347697013116E53176374B12D874E75A400846F4A7373F3E53C359655E31F183AB2D2BF46AB06E5A7778E454C72445E1F2E2C792EFDBEC96D06B0CAB13B934CC94A7FD4B46A039AE5DF4894AE1B326210C03EAED5B4260E646620BCA7E2DF7ED4186CEF36F133BEB00F9D50B1817F05BE7B9FEB53BF86508CB059F6B0F257C370000000000010001FD45432000FFFF01"
+        },
+        "card_identification": {
+            "id": 1,
+            "card_issuing_member_state": "Poland",
+            "card_number": "1850501138380001",
+            "card_issuing_authority_name": "PWPW S.A.",
+            "card_issue_date": "2016-01-26T00:00:00Z",
+            "card_validity_begin": "2016-02-19T00:00:00Z",
+            "card_expiry_date": "2021-02-18T23:59:59Z",
+            "card_holder_surname": "Turek",
+            "card_holder_firstnames": "Michal Seweryn",
+            "card_holder_birth_date": "1985-05-01T00:00:00Z",
+            "card_holder_prefered_language": "pl"
+        },
+        "driving_licence": {
+            "id": 1,
+            "driving_licence_issuing_authority": "Prezydent Miasta Katowice",
+            "driving_licence_issuing_nation": "Poland",
+            "driving_licence_number": "11274022469"
+        }
+    }
+}

@@ -28,7 +28,7 @@ const Box: React.FC<IBox> = ({navigation, text, icon, nav}) => {
   return (
     <StyledTouchableOpacity
       onPress={() => handlePress(nav)}
-      className="btn bg-darkBlue w-[40%] p-5 mb-4 rounded-xl shadow-sm shadow-black aspect-square ">
+      className="btn bg-darkBlue w-[40%] p-4 mb-4 rounded-xl shadow-sm shadow-black aspect-square ">
       <StyledView className="h-full flex-col items-center justify-center">
         <StyledView className="mb-2">{icon}</StyledView>
         <StyledText className="text-lg text-center text-lightGray leading-6">

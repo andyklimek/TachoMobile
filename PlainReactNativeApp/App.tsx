@@ -1,34 +1,138 @@
-import React from 'react';
-import {View, NativeModules} from 'react-native';
-import Button from './components/Button/Button';
-import AndroidUsbDevice from './interfaces/AndroidUsbDevice';
+import React, {useEffect, useState} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {styled} from 'nativewind';
+import {View, Text, AppState} from 'react-native';
+import LoginScreen from '@/app/LoginScreen';
+import DashboardScreen from '@/app/DashboardScreen';
+import ReportsScreen from '@/app/ReportsScreen';
+import ReportDetails from '@/app/ReportDetailsScreen';
+import ReportDetailsScreenEvents from '@/app/ReportDetailsScreen/ReportDetailsScreenEvents';
+import ReportDetailsScreenActivitiesData from './app/ReportDetailsScreen/ReportDetailsScreenActivities/ReportDetailsScreenActivitiesData';
+// import ReportFaults from '@/app/Reports/[id]/Faults';
+import ReportDetailsScreenVehicles from './app/ReportDetailsScreen/ReportDetailsScreenVehicles';
+import ReportDetailsScreenPlaces from '@/app/ReportDetailsScreen/ReportDetailsScreenPlaces';
+import ReportDetailsScreenActivities from '@/app/ReportDetailsScreen/ReportDetailsScreenActivities';
+import DocumentsScreen from '@/app/DocumentsScreen';
+import FilesScreen from '@/app/FilesScreen';
+import LoadingScreen from '@/app/LoadingScreen';
+import 'react-native-reanimated';
+import {AuthProvider, useAuth} from '@/context/AuthContext';
 
-const App: React.FC = () => {
-  const {Apdu} = NativeModules;
+const Stack = createNativeStackNavigator();
+const StyledView = styled(View);
+const StyledText = styled(Text);
 
-  const connect = async () => {
-    try {
-      const devices: AndroidUsbDevice[] = await Apdu.listUsbDevices();
-      let deviceId;
-      if (devices.length > 0) {
-        deviceId = devices[0].deviceId;
-      } else {
-        return;
-      }
+const App = () => {
+  const [appState, setAppState] = useState(AppState.currentState);
 
-      console.log(await Apdu.openDevice(deviceId));
-    } catch (error) {
-      console.log(error);
-    }
-    await Apdu.closeDevice();
-  };
+  useEffect(() => {
+    const handleAppStateChange = nextAppState => {
+      setAppState(nextAppState);
+    };
+
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange,
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   return (
     <>
-      <View>
-        <Button text="Connect" onPress={connect} />
-      </View>
+      {appState === 'active' && (
+        <NavigationContainer>
+          <AuthProvider>
+            <StyledView className="flex-1 pt-12 pb-2 bg-lightGray">
+              <Navigator />
+            </StyledView>
+          </AuthProvider>
+        </NavigationContainer>
+      )}
     </>
+  );
+};
+
+const Navigator = () => {
+  const {loading, user} = useAuth();
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
+  return (
+    <Stack.Navigator initialRouteName={'dashboard'}>
+      <Stack.Screen
+        name="login"
+        component={LoginScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="dashboard"
+        component={DashboardScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="reports"
+        component={ReportsScreen}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name="reportDetails"
+        component={ReportDetails}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="reportDetailsEvents"
+        component={ReportDetailsScreenEvents}
+        options={{headerShown: false}}
+      />
+      {/*
+      <Stack.Screen
+        name="reportFaults"
+        component={ReportFaults}
+        options={{headerShown: false}}
+      />
+      */}
+      {
+        <Stack.Screen
+          name="reportDetailsVehicles"
+          component={ReportDetailsScreenVehicles}
+          options={{headerShown: false}}
+        />
+      }
+      {
+        <Stack.Screen
+          name="reportDetailsPlaces"
+          component={ReportDetailsScreenPlaces}
+          options={{headerShown: false}}
+        />
+      }
+      <Stack.Screen
+        name="reportDetailsActivities"
+        component={ReportDetailsScreenActivities}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="reportDetailsActivitiesData"
+        component={ReportDetailsScreenActivitiesData}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="documents"
+        component={DocumentsScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="files"
+        component={FilesScreen}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
   );
 };
 
