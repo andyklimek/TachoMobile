@@ -25,7 +25,7 @@ const LoginForm = () => {
     try {
       await login(data.username, data.password);
       navigation.navigate('dashboard');
-    } catch (error) {
+    } catch (err) {
       setError(true);
     }
   };
@@ -72,7 +72,7 @@ const LoginForm = () => {
 
       <StyledButton
         text="Zaloguj"
-        className="mt-4 bg-darkBlue py-3 rounded-2xl text-lightGray shadow-sm shadow-black"
+        className="mt-4 bg-darkBlue py-3 rounded-2xl text-lightGray"
         icon={<StyledIcon className="text-lightGray" />}
         onPress={handleSubmit(onSubmit)}
       />

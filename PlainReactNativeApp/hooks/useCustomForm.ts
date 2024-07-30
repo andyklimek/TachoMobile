@@ -1,12 +1,11 @@
-import { z, ZodSchema } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {useForm} from 'react-hook-form';
 
 const useCustomForm = (schema: ZodSchema, defaultValues: any) => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: {errors},
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues,

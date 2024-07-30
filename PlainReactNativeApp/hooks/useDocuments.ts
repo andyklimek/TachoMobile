@@ -1,6 +1,5 @@
 import {useState, useEffect} from 'react';
 import axiosInstance from '@/utils/axiosConfig';
-import moment from 'moment';
 
 const keyToTitleMapper = {
   card_ca_certificate: 'Certyfikat CA Karty',
@@ -56,7 +55,7 @@ const useDocuments = (id: number) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchDocuments = async (id: number) => {
+  const fetchDocuments = async () => {
     try {
       setLoading(true);
       const response = await axiosInstance.get(`/driver-card/${id}/`);

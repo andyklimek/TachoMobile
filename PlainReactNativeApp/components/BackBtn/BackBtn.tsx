@@ -1,6 +1,6 @@
 import React from 'react';
 import {styled} from 'nativewind';
-import {TouchableOpacity, View, GestureResponderEvent} from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
 import {ChevronLeft} from 'lucide-react-native';
 import {useNavigation} from '@react-navigation/native';
 
@@ -10,7 +10,7 @@ const StyledView = styled(View);
 const BackBtn = () => {
   const navigation = useNavigation();
 
-  const handlePress = (event: GestureResponderEvent) => {
+  const handlePress = () => {
     navigation.goBack();
   };
 

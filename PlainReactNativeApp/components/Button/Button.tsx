@@ -1,6 +1,11 @@
 import React from 'react';
-import { TouchableOpacity, Text, View, GestureResponderEvent } from 'react-native';
-import { styled } from 'nativewind';
+import {
+  TouchableOpacity,
+  Text,
+  View,
+  GestureResponderEvent,
+} from 'react-native';
+import {styled} from 'nativewind';
 
 const StyledTouchableOpacity = styled(TouchableOpacity);
 const StyledText = styled(Text);
@@ -14,9 +19,18 @@ interface IButtonProps {
   className?: string;
 }
 
-const Button: React.FC<IButtonProps> = ({ text, icon, onPress, className, ...props }) => {
+const Button: React.FC<IButtonProps> = ({
+  text,
+  icon,
+  onPress,
+  className,
+  ...props
+}) => {
   return (
-    <StyledTouchableOpacity onPress={onPress} {...props} className={`relative btn ${className}`}>
+    <StyledTouchableOpacity
+      onPress={onPress}
+      {...props}
+      className={`relative btn ${className}`}>
       <StyledView className="flex-row items-center justify-center">
         <StyledText className="text-lg text-white">{text}</StyledText>
         {icon && <StyledView className="ml-2">{icon}</StyledView>}

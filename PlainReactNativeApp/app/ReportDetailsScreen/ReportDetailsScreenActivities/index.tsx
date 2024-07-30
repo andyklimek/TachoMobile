@@ -1,28 +1,23 @@
 import React from 'react';
 import {styled} from 'nativewind';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {ScrollView, View, Text} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import Heading from '@/components/Heading/Heading';
-import withAuth from '@/utils/withAuth';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import useReport from '@/hooks/useReport';
 import LoadingScreen from '@/app/LoadingScreen';
 import NoContent from '@/components/NoContent/NoContent';
-import DataElement from '@/components/DataElement/DataElement';
 import Button from '@/components/Button/Button';
-import {useAuth} from '@/context/AuthContext';
-import ReportEvents from '@/app/ReportDetailsScreen/ReportDetailsScreenEvents';
 import moment from 'moment';
 
 const StyledView = styled(View);
-const StyledText = styled(Text);
 const StyledSafeAreaView = styled(SafeAreaView);
 const StyledScrollView = styled(ScrollView);
 
 const ReportDetailsScreenActivities = () => {
   const route = useRoute();
   const {id} = route.params;
-  const {report, loading, error, transformData} = useReport(id);
+  const {report, loading, error} = useReport(id);
   const navigation = useNavigation();
 
   if (loading) {
@@ -33,15 +28,14 @@ const ReportDetailsScreenActivities = () => {
     navigation.navigate('reportDetailsActivitiesData', {id, date});
   };
 
-  const reportActivities = report[id]['driver_activities'];
-  console.log(reportActivities);
+  const reportActivities = report[id].driver_activities;
 
   return (
     <StyledSafeAreaView className="flex-1 bg-lightGray">
       <StyledScrollView contentContainerStyle={{flexGrow: 1}}>
         <StyledView className="flex-1 px-4">
           <Heading title="Aktywności" classes="mb-6" />
-          {reportActivities.length === 0 ? (
+          {reportActivities.length === 0 || error ? (
             <NoContent elementName="wydarzeń" />
           ) : (
             reportActivities.map((activity, idx) => (
@@ -59,4 +53,4 @@ const ReportDetailsScreenActivities = () => {
   );
 };
 
-export default withAuth(ReportDetailsScreenActivities);
+export default ReportDetailsScreenActivities;

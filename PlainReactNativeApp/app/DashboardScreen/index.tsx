@@ -4,7 +4,6 @@ import {ScrollView} from 'react-native';
 import {styled} from 'nativewind';
 import LogoImage from '@/components/LogoImage/LogoImage';
 import DashboardElements from '@/components/DashboardElements/DashboardElements';
-import withAuth from '@/utils/withAuth';
 
 const StyledSafeAreaView = styled(SafeAreaView);
 const StyledScrollView = styled(ScrollView);
@@ -20,4 +19,4 @@ const DashboardScreen = () => {
   );
 };
 
-export default withAuth(DashboardScreen);
+export default DashboardScreen;

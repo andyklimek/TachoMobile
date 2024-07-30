@@ -26,7 +26,7 @@ const ExpandedData: React.FC<IExpandedDataProps> = ({data, translateKey}) => {
   };
 
   return (
-    <StyledView className="p-4 rounded-lg shadow-md">
+    <StyledView className="p-4 rounded-lg">
       {Object.keys(data).map(
         key =>
           key !== 'id' && (

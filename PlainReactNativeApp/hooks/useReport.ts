@@ -1,6 +1,5 @@
 import {useState, useEffect} from 'react';
 import axiosInstance from '@/utils/axiosConfig';
-import moment from 'moment';
 
 const keyToTitleMapper = {
   ddd_file_url: 'Link do Pliku DDD',
@@ -59,7 +58,7 @@ const useReport = (id: number) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchReport = async (id: number) => {
+  const fetchReport = async () => {
     try {
       setLoading(true);
       const response = await axiosInstance.get(`/report/${id}/`);

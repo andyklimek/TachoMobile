@@ -9,7 +9,7 @@ const useReports = () => {
   const fetchReports = async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get(`/report/all/`);
+      const response = await axiosInstance.get('/report/all/');
 
       const data = response.data.results;
 

@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  TouchableOpacity,
-  Text,
-  View,
-  GestureResponderEvent,
-} from 'react-native';
+import {TouchableOpacity, Text, View} from 'react-native';
 import {styled} from 'nativewind';
 import {useNavigation} from '@react-navigation/native';
 
@@ -18,17 +13,17 @@ interface IBox {
   nav?: string;
 }
 
-const Box: React.FC<IBox> = ({navigation, text, icon, nav}) => {
+const Box: React.FC<IBox> = ({text, icon, nav}) => {
   const {navigate} = useNavigation();
 
-  const handlePress = (nav: string) => {
+  const handlePress = () => {
     navigate(nav);
   };
 
   return (
     <StyledTouchableOpacity
       onPress={() => handlePress(nav)}
-      className="btn bg-darkBlue w-[40%] p-4 mb-4 rounded-xl shadow-sm shadow-black aspect-square ">
+      className="btn bg-darkBlue w-[40%] p-4 mb-4 rounded-xl aspect-square ">
       <StyledView className="h-full flex-col items-center justify-center">
         <StyledView className="mb-2">{icon}</StyledView>
         <StyledText className="text-lg text-center text-lightGray leading-6">

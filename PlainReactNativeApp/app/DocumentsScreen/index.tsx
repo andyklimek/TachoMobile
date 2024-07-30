@@ -2,7 +2,6 @@ import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ScrollView, Text, View} from 'react-native';
 import {styled} from 'nativewind';
-import withAuth from '@/utils/withAuth';
 import Heading from '@/components/Heading/Heading';
 import {useAuth} from '@/context/AuthContext';
 import useDocuments from '@/hooks/useDocuments';
@@ -18,21 +17,15 @@ const StyledText = styled(Text);
 
 const DocumentsScreen = () => {
   const {user} = useAuth();
-  const {documents, loading, error, transformData, translateKey} = useDocuments(
-    user?.id,
-  );
+  const {documents, loading, error, translateKey} = useDocuments(user?.id);
 
   if (loading) {
     return <LoadingScreen />;
   }
 
-  console.log(documents['updated_at']);
-
   const filteredDocumentKeys = Object.keys(documents).filter(
     key => key !== 'id' && key !== 'user_id' && key !== 'updated_at',
   );
-
-  console.log(filteredDocumentKeys);
 
   return (
     <StyledSafeAreaView className="flex-1 bg-lightGray">
@@ -44,11 +37,11 @@ const DocumentsScreen = () => {
               Ostatnia aktualizacja:
             </StyledText>
             <StyledText className="text-lightBlue font-semibold">
-              {moment(documents['updated_at']).format('DD.MM.YYYY HH:mm')}
+              {moment(documents.updated_at).format('DD.MM.YYYY HH:mm')}
             </StyledText>
           </StyledView>
 
-          {filteredDocumentKeys.length === 0 ? (
+          {filteredDocumentKeys.length === 0 || error ? (
             <NoContent elementName="dokumentów" />
           ) : (
             filteredDocumentKeys.map(key => (
@@ -66,4 +59,4 @@ const DocumentsScreen = () => {
   );
 };
 
-export default withAuth(DocumentsScreen);
+export default DocumentsScreen;

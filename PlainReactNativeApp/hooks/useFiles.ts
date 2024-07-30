@@ -1,14 +1,5 @@
 import {useState, useEffect} from 'react';
 import axiosInstance from '@/utils/axiosConfig';
-import moment from 'moment';
-
-const keyToTitleMapper = {
-  dddfile: 'Plik DDD',
-  user: 'Użytkownik',
-  name: 'Nazwa',
-};
-
-const translateKey = key => keyToTitleMapper[key] || key;
 
 const useFiles = () => {
   const [files, setFiles] = useState<any>({});
@@ -18,7 +9,7 @@ const useFiles = () => {
   const fetchFiles = async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get(`/ddd/user/`);
+      const response = await axiosInstance.get('/ddd/user/');
       const data = response.data.results;
 
       data.forEach(file => {

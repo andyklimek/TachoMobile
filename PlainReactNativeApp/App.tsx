@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import React, {useEffect, useState, useContext} from 'react';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {styled} from 'nativewind';
 import {View, Text, AppState} from 'react-native';
@@ -58,81 +58,77 @@ const App = () => {
 
 const Navigator = () => {
   const {loading, user} = useAuth();
+  const navigaton = useNavigation();
 
   if (loading) {
     return <LoadingScreen />;
   }
 
   return (
-    <Stack.Navigator initialRouteName={'dashboard'}>
-      <Stack.Screen
-        name="login"
-        component={LoginScreen}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="dashboard"
-        component={DashboardScreen}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="reports"
-        component={ReportsScreen}
-        options={{headerShown: false}}
-      />
-
-      <Stack.Screen
-        name="reportDetails"
-        component={ReportDetails}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="reportDetailsEvents"
-        component={ReportDetailsScreenEvents}
-        options={{headerShown: false}}
-      />
-      {/*
-      <Stack.Screen
-        name="reportFaults"
-        component={ReportFaults}
-        options={{headerShown: false}}
-      />
-      */}
-      {
-        <Stack.Screen
-          name="reportDetailsVehicles"
-          component={ReportDetailsScreenVehicles}
-          options={{headerShown: false}}
-        />
-      }
-      {
-        <Stack.Screen
-          name="reportDetailsPlaces"
-          component={ReportDetailsScreenPlaces}
-          options={{headerShown: false}}
-        />
-      }
-      <Stack.Screen
-        name="reportDetailsActivities"
-        component={ReportDetailsScreenActivities}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="reportDetailsActivitiesData"
-        component={ReportDetailsScreenActivitiesData}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="documents"
-        component={DocumentsScreen}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="files"
-        component={FilesScreen}
-        options={{headerShown: false}}
-      />
-    </Stack.Navigator>
+    <>
+      {!user ? (
+        <Stack.Navigator intialRoute="login">
+          <Stack.Screen
+            name="login"
+            component={LoginScreen}
+            options={{headerShown: false}}
+          />
+        </Stack.Navigator>
+      ) : (
+        <Stack.Navigator initialRoute="dashboard">
+          <Stack.Screen
+            name="dashboard"
+            component={DashboardScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="reports"
+            component={ReportsScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="reportDetails"
+            component={ReportDetails}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="reportDetailsEvents"
+            component={ReportDetailsScreenEvents}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="reportDetailsVehicles"
+            component={ReportDetailsScreenVehicles}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="reportDetailsPlaces"
+            component={ReportDetailsScreenPlaces}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="reportDetailsActivities"
+            component={ReportDetailsScreenActivities}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="reportDetailsActivitiesData"
+            component={ReportDetailsScreenActivitiesData}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="documents"
+            component={DocumentsScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="files"
+            component={FilesScreen}
+            options={{headerShown: false}}
+          />
+        </Stack.Navigator>
+      )}
+    </>
   );
 };
 

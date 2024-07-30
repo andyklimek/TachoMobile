@@ -20,7 +20,7 @@ const DataElement: React.FC<IDataElement> = ({data, title, translateKey}) => {
   };
 
   return (
-    <StyledView className="rounded-lg shadow-md bg-slate-100 mb-3">
+    <StyledView className="rounded-lg bg-slate-100 mb-3">
       <Button
         onPress={handlePress}
         className="rounded-lg bg-darkBlue p-2"

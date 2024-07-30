@@ -1,25 +1,22 @@
-import Reacct from 'react';
+import React from 'react';
 import Button from '@/components/Button/Button';
 import Heading from '@/components/Heading/Heading';
 import LoadingScreen from '@/app/LoadingScreen';
 import {useNavigation} from '@react-navigation/native';
 import {styled} from 'nativewind';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {ScrollView, View, Text} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import useReports from '@/hooks/useReports';
-import {useAuth} from '@/context/AuthContext';
-import withAuth from '@/utils/withAuth';
 import NoContent from '@/components/NoContent/NoContent';
 import moment from 'moment';
 
 const StyledView = styled(View);
-const StyledText = styled(Text);
 const StyledSafeAreaView = styled(SafeAreaView);
 const StyledScrollView = styled(ScrollView);
 
 const ReportsScreen = () => {
   const navigation = useNavigation();
-  const {user} = useAuth();
+
   const {reports, loading, error} = useReports();
 
   const handlePress = (id, date) => {
@@ -35,7 +32,7 @@ const ReportsScreen = () => {
       <StyledScrollView contentContainerStyle={{flexGrow: 1}}>
         <StyledView className="flex-1 px-4">
           <Heading title="Raporty" classes="mb-6" />
-          {reports.length === 0 ? (
+          {reports.length === 0 || error ? (
             <NoContent elementName="raportów" />
           ) : (
             reports.map((report, idx) => (
@@ -53,4 +50,4 @@ const ReportsScreen = () => {
   );
 };
 
-export default withAuth(ReportsScreen);
+export default ReportsScreen;

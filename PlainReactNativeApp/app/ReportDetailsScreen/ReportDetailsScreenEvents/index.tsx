@@ -1,9 +1,8 @@
 import React from 'react';
 import {styled} from 'nativewind';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {ScrollView, View, Text} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import Heading from '@/components/Heading/Heading';
-import withAuth from '@/utils/withAuth';
 import {useRoute} from '@react-navigation/native';
 import useReport from '@/hooks/useReport';
 import LoadingScreen from '@/app/LoadingScreen';
@@ -12,7 +11,6 @@ import DataElement from '@/components/DataElement/DataElement';
 import moment from 'moment';
 
 const StyledView = styled(View);
-const StyledText = styled(Text);
 const StyledSafeAreaView = styled(SafeAreaView);
 const StyledScrollView = styled(ScrollView);
 
@@ -25,20 +23,20 @@ const ReportDetailsScreenEvents = () => {
     return <LoadingScreen />;
   }
 
-  const reportEvents = report[id]['events'];
+  const reportEvents = report[id].events;
 
   return (
     <StyledSafeAreaView className="flex-1 bg-lightGray">
       <StyledScrollView contentContainerStyle={{flexGrow: 1}}>
         <StyledView className="flex-1 px-4">
           <Heading title="Wydarzenia" classes="mb-6" />
-          {reportEvents.length === 0 ? (
+          {reportEvents.length === 0 || error ? (
             <NoContent elementName="wydarzeń" />
           ) : (
             reportEvents.map((event, idx) => (
               <DataElement
                 key={idx}
-                title={moment(event.end_time).format(`DD/MM/YYYY/HH:mm`)}
+                title={moment(event.end_time).format('DD/MM/YYYY/HH:mm')}
                 data={event}
                 translateKey={translateKey}
               />
@@ -50,4 +48,4 @@ const ReportDetailsScreenEvents = () => {
   );
 };
 
-export default withAuth(ReportDetailsScreenEvents);
+export default ReportDetailsScreenEvents;

@@ -1,6 +1,7 @@
 import React, {createContext, useState, useEffect, useContext} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '@/utils/axiosConfig';
+import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
 
 interface AuthContextProps {
@@ -18,19 +19,7 @@ const AuthProvider: React.FC = ({children}) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadUser = async () => {
-      setLoading(true);
-      const token = await AsyncStorage.getItem('access');
-      if (token) {
-        axiosInstance.defaults.headers.common[
-          'Authorization'
-        ] = `Bearer ${token}`;
-        setUser(jwtDecode(token));
-      }
-      setLoading(false);
-    };
-
-    loadUser();
+    checkAuth();
   }, []);
 
   const login = async (username: string, password: string) => {
@@ -41,17 +30,12 @@ const AuthProvider: React.FC = ({children}) => {
         password,
       });
       const token = response.data.access;
-      await AsyncStorage.setItem('access', token);
-      axiosInstance.defaults.headers.common[
-        'Authorization'
-      ] = `Bearer ${token}`;
+      // await AsyncStorage.setItem('access', token);
+      // axiosInstance.defaults.headers.common[
+      //   'Authorization'
+      // ] = `Bearer ${token}`;
       setUser(jwtDecode(token));
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response) {
-        }
-      } else {
-      }
       return Promise.reject(error);
     } finally {
       setLoading(false);
@@ -75,11 +59,9 @@ const AuthProvider: React.FC = ({children}) => {
         setUser(jwtDecode(token));
       } else {
         setUser(null);
-        return Promise.reject();
       }
     } catch (error) {
       setUser(null);
-      return Promise.reject();
     } finally {
       setLoading(false);
     }

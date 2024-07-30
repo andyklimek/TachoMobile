@@ -2,14 +2,12 @@ import React from 'react';
 import {styled} from 'nativewind';
 import Heading from '@/components/Heading/Heading';
 import Button from '@/components/Button/Button';
-import withAuth from '@/utils/withAuth';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {ScrollView, View, Text} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import moment from 'moment';
 
 const StyledView = styled(View);
-const StyledText = styled(Text);
 const StyledSafeAreaView = styled(SafeAreaView);
 const StyledScrollView = styled(ScrollView);
 
@@ -18,7 +16,7 @@ const ReportDetailsScreen = () => {
   const route = useRoute();
   const {id, date} = route.params;
 
-  const handlePress = (nav: string, id: number) => {
+  const handlePress = (nav: string) => {
     navigation.navigate(nav, {id});
   };
 
@@ -58,4 +56,4 @@ const ReportDetailsScreen = () => {
   );
 };
 
-export default withAuth(ReportDetailsScreen);
+export default ReportDetailsScreen;
