@@ -1,27 +1,48 @@
-import React, {useEffect, useState, useContext} from 'react';
-import {NavigationContainer, useNavigation} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {styled} from 'nativewind';
-import {View, Text, AppState} from 'react-native';
-import LoginScreen from '@/app/LoginScreen';
-import DashboardScreen from '@/app/DashboardScreen';
-import ReportsScreen from '@/app/ReportsScreen';
-import ReportDetails from '@/app/ReportDetailsScreen';
-import ReportDetailsScreenEvents from '@/app/ReportDetailsScreen/ReportDetailsScreenEvents';
-import ReportDetailsScreenActivitiesData from './app/ReportDetailsScreen/ReportDetailsScreenActivities/ReportDetailsScreenActivitiesData';
-// import ReportFaults from '@/app/Reports/[id]/Faults';
-import ReportDetailsScreenVehicles from './app/ReportDetailsScreen/ReportDetailsScreenVehicles';
-import ReportDetailsScreenPlaces from '@/app/ReportDetailsScreen/ReportDetailsScreenPlaces';
-import ReportDetailsScreenActivities from '@/app/ReportDetailsScreen/ReportDetailsScreenActivities';
-import DocumentsScreen from '@/app/DocumentsScreen';
-import FilesScreen from '@/app/FilesScreen';
-import LoadingScreen from '@/app/LoadingScreen';
+import 'intl-pluralrules';
+import {View, AppState} from 'react-native';
+// import LoginScreen from '@/screens/LoginScreen';
+// import DashboardScreen from '@/screens/DashboardScreen';
+// import ReportsScreen from '@/screens/ReportsScreen';
+// import ReportDetails from '@/screens/ReportDetailsScreen';
+// import ReportDetailsScreenEvents from '@/screens/ReportDetailsScreen/ReportDetailsScreenEvents';
+// import ReportDetailsScreenActivitiesData from './screens/ReportDetailsScreen/ReportDetailsScreenActivities/ReportDetailsScreenActivitiesData';
+// // import ReportFaults from '@/screens/Reports/[id]/Faults';
+// import ReportDetailsScreenVehicles from './screens/ReportDetailsScreen/ReportDetailsScreenVehicles';
+// import ReportDetailsScreenPlaces from '@/screens/ReportDetailsScreen/ReportDetailsScreenPlaces';
+// import ReportDetailsScreenActivities from '@/screens/ReportDetailsScreen/ReportDetailsScreenActivities';
+// import DocumentsScreen from '@/screens/DocumentsScreen';
+// import FilesScreen from '@/screens/FilesScreen';
+// import LoadingScreen from '@/screens/LoadingScreen';
+// import ReadersScreen from '@/screens/ReadersScreen';
+// import SettingsScreen from '@/screens/SettingsScreen';
+import {
+  LoginScreen,
+  DashboardScreen,
+  ReportsScreen,
+  ReportDetailsScreen,
+  ReportDetailsScreenEvents,
+  ReportDetailsScreenVehicles,
+  ReportDetailsScreenPlaces,
+  ReportDetailsScreenActivities,
+  ReportDetailsScreenActivitiesData,
+  DocumentsScreen,
+  FilesScreen,
+  LoadingScreen,
+  ReadersScreen,
+  SettingsScreen,
+} from '@/screens';
+import {I18nextProvider} from 'react-i18next';
+import i18next from 'i18next';
+import '@/utils/i18n.ts';
 import 'react-native-reanimated';
 import {AuthProvider, useAuth} from '@/context/AuthContext';
 
 const Stack = createNativeStackNavigator();
 const StyledView = styled(View);
-const StyledText = styled(Text);
 
 const App = () => {
   const [appState, setAppState] = useState(AppState.currentState);
@@ -44,13 +65,15 @@ const App = () => {
   return (
     <>
       {appState === 'active' && (
-        <NavigationContainer>
-          <AuthProvider>
-            <StyledView className="flex-1 pt-12 pb-2 bg-lightGray">
-              <Navigator />
-            </StyledView>
-          </AuthProvider>
-        </NavigationContainer>
+        <I18nextProvider i18n={i18next}>
+          <NavigationContainer>
+            <AuthProvider>
+              <StyledView className="flex-1 pt-12 pb-2 bg-lightGray">
+                <Navigator />
+              </StyledView>
+            </AuthProvider>
+          </NavigationContainer>
+        </I18nextProvider>
       )}
     </>
   );
@@ -58,7 +81,6 @@ const App = () => {
 
 const Navigator = () => {
   const {loading, user} = useAuth();
-  const navigaton = useNavigation();
 
   if (loading) {
     return <LoadingScreen />;
@@ -88,7 +110,7 @@ const Navigator = () => {
           />
           <Stack.Screen
             name="reportDetails"
-            component={ReportDetails}
+            component={ReportDetailsScreen}
             options={{headerShown: false}}
           />
           <Stack.Screen
@@ -124,6 +146,16 @@ const Navigator = () => {
           <Stack.Screen
             name="files"
             component={FilesScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="readers"
+            component={ReadersScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="settings"
+            component={SettingsScreen}
             options={{headerShown: false}}
           />
         </Stack.Navigator>

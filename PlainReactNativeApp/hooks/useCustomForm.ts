@@ -1,7 +1,7 @@
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
 
-const useCustomForm = (schema: ZodSchema, defaultValues: any) => {
+const useCustomForm = (schema: ZodSchema, defaultValues: any = {}) => {
   const {
     control,
     handleSubmit,

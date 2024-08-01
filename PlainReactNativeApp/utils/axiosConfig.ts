@@ -28,7 +28,7 @@ axiosInstance.interceptors.response.use(
 
 const refreshToken = async () => {
   const response = await axiosInstance.post('/auth/refresh/');
-  const token = response;
+  const token = response.data.access;
   await AsyncStorage.setItem('access', token);
 };
 

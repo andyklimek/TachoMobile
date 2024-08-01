@@ -30,10 +30,10 @@ const AuthProvider: React.FC = ({children}) => {
         password,
       });
       const token = response.data.access;
-      // await AsyncStorage.setItem('access', token);
-      // axiosInstance.defaults.headers.common[
-      //   'Authorization'
-      // ] = `Bearer ${token}`;
+      await AsyncStorage.setItem('access', token);
+      axiosInstance.defaults.headers.common[
+        'Authorization'
+      ] = `Bearer ${token}`;
       setUser(jwtDecode(token));
     } catch (error) {
       return Promise.reject(error);
