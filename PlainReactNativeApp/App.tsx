@@ -18,6 +18,7 @@ const App: React.FC = () => {
 
       console.log(await Apdu.openDevice(deviceId));
     } catch (error) {
+      console.log('ERROR');
       console.log(error);
     }
     await Apdu.closeDevice();

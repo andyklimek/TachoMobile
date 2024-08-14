@@ -23,7 +23,7 @@ import java.util.Arrays;
 public class ApduModule extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
-    private final int TIMEOUT = 2000;
+    private final int TIMEOUT = 1000;
 
     // USB settings
     private UsbManager mUsbManager;
@@ -36,6 +36,11 @@ public class ApduModule extends ReactContextBaseJavaModule {
 
     // APDU sender / receiver
     private StringBuilder result;
+
+    private static final byte CCID_MESSAGE_TYPE_PC_TO_RDR_ICC_POWER_ON = 0x62;
+    private static final byte CCID_MESSAGE_TYPE_PC_TO_RDR_XFR_BLOCK = 0x6F;
+    private static final byte CCID_MESSAGE_TYPE_RDR_TO_PC_DATA_BLOCK = (byte) 0x80;
+    private static final int CCID_HEADER_LENGTH = 10;
 
     private static final String ACTION_USB_PERMISSION = "com.plainreactnativeapp.USB_PERMISSION";
 
@@ -91,6 +96,7 @@ public class ApduModule extends ReactContextBaseJavaModule {
                 deviceMap.putInt("vendorId", device.getVendorId());
                 deviceMap.putInt("productId", device.getProductId());
                 deviceMap.putString("version", device.getVersion());
+                deviceMap.putInt("protocol", device.getDeviceProtocol());
                 devicesArray.pushMap(deviceMap);
             }
 
@@ -123,6 +129,7 @@ public class ApduModule extends ReactContextBaseJavaModule {
         }
     }
 
+
     @ReactMethod
     public void openDevice(int deviceId, Promise promise) {
         UsbDevice device = getDeviceById(deviceId);
@@ -146,11 +153,10 @@ public class ApduModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void closeDevice(Promise promise) {
-        if(connection == null) {
+        if (connection == null) {
             Log.i("NoDeviceOpened", "Developer tried to disconnect null device");
             promise.reject("NoDeviceOpened", "Any device is currently connected");
-        }
-        else {
+        } else {
             connection.close();
             Log.i("ConnectionClosed", "Connection to the device was closed");
             promise.resolve("Connection was closed");
@@ -164,17 +170,26 @@ public class ApduModule extends ReactContextBaseJavaModule {
                 mPendingPromise.reject("ConnectionNotEstablished", "Couldn't establish connection to USB device");
                 return;
             }
+            else {
+                Log.i("ConnectionEstablished", "Connection to device was established");
+            }
 
             for (int i = 0; i < device.getInterfaceCount(); i++) {
                 usbInterface = device.getInterface(i);
                 connection.claimInterface(usbInterface, true);
 
+                Log.i("End", String.valueOf(usbInterface.getEndpointCount()));
+                Log.i("Device", String.valueOf(device.getDeviceClass()));
+
                 for (int j = 0; j < usbInterface.getEndpointCount(); j++) {
                     UsbEndpoint end = usbInterface.getEndpoint(j);
+                    Log.i("dssd", String.valueOf(end.getType()));
                     if (end.getType() == UsbConstants.USB_ENDPOINT_XFER_BULK) {
                         if (end.getDirection() == UsbConstants.USB_DIR_OUT) {
+                            Log.i("EndpointConnected", "UsbDirOut connected");
                             epOut = end;
                         } else if (end.getDirection() == UsbConstants.USB_DIR_IN) {
+                            Log.i("EndpointConnected", "UsbDirIn connected");
                             epIn = end;
                         }
                     }
@@ -191,8 +206,8 @@ public class ApduModule extends ReactContextBaseJavaModule {
                 return;
             }
 
-            byte[] atrCommand = new byte[]{(byte)0xFF, 0x00, 0x48, 0x00, 0x00};
-            write(connection, epOut, atrCommand);
+            byte[] powerOnCommand = new byte[]{(byte) 0x00, (byte) 0xA4, (byte) 0x00, (byte) 0x00, (byte) 0x02, (byte) 0x3F, (byte) 0x00};
+            write(connection, epOut, powerOnCommand);
             read(connection, epIn);
 
             Log.i("DeviceOpened", "Device was successfully opened");
@@ -206,6 +221,7 @@ public class ApduModule extends ReactContextBaseJavaModule {
     public void write(UsbDeviceConnection connection, UsbEndpoint epOut, byte[] command) {
         result = new StringBuilder();
         int byteCount = connection.bulkTransfer(epOut, command, command.length, TIMEOUT);
+
         if (byteCount < 0) {
             Log.e("WriteError", "An error occurred while transferring command to smartcard");
         } else {
@@ -219,16 +235,16 @@ public class ApduModule extends ReactContextBaseJavaModule {
     public int read(UsbDeviceConnection connection, UsbEndpoint epIn) {
         result = new StringBuilder();
         final byte[] buffer = new byte[epIn.getMaxPacketSize()];
-        int byteCount = connection.bulkTransfer(epIn, buffer, buffer.length, TIMEOUT);
+        int byteCount = -1;
+        byteCount = connection.bulkTransfer(epIn, buffer, buffer.length, TIMEOUT);
 
         if (byteCount >= 0) {
-            for (byte bb : buffer) {
-                result.append(String.format(" %02X ", bb));
+            for (int i = 0; i < byteCount; i++) {
+                result.append(String.format(" %02X ", buffer[i]));
             }
-
             Log.i("ReadSuccess", "Buffer received was: " + result.toString());
         } else {
-            Log.e("ReadError", "Problem occurred while reading response from smartcard. Byte count: " + byteCount + result.toString());
+            Log.e("ReadError", "Problem occurred while reading response from smartcard. Byte count: " + byteCount);
         }
 
         return byteCount;
