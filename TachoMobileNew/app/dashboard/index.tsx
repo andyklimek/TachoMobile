@@ -11,9 +11,18 @@ const StyledSafeAreaView = styled(SafeAreaView);
 
 const DashboardScreen = () => {
   const { checkAuth } = useAuth();
+  const navigation = useNavigation();
 
   useEffect(() => {
-    checkAuth();
+    const verifyAuth = async () => {
+      try {
+        await checkAuth();
+      } catch (error) {
+        navigation.navigate('login');
+      }
+    };
+
+    verifyAuth();
   }, []);
 
   return (

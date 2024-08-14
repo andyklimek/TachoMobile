@@ -1,11 +1,10 @@
-# Resolve react_native_pods.rb with node to allow for hoisting
-require Pod::Executable.execute_command('node', ['-p',
-  'require.resolve(
-    "react-native/scripts/react_native_pods.rb",
-    {paths: [process.argv[1]]},
-  )', __dir__]).strip
+platform :ios, '14.0' # Try setting it to iOS 14.0
 
-platform :ios, min_ios_version_supported
+require 'json'
+require 'pathname'
+require Pod::Executable.execute_command('node', ['-p',
+  'require.resolve("react-native/scripts/react_native_pods.rb")']).strip
+
 prepare_react_native_project!
 
 linkage = ENV['USE_FRAMEWORKS']
@@ -29,12 +28,6 @@ target 'PlainReactNativeApp' do
   end
 
   post_install do |installer|
-    # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
-    react_native_post_install(
-      installer,
-      config[:reactNativePath],
-      :mac_catalyst_enabled => false,
-      # :ccache_enabled => true
-    )
+    react_native_post_install(installer)
   end
 end

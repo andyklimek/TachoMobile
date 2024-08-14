@@ -8,6 +8,7 @@ import BackBtn from '@/components/BackBtn/BackBtn';
 import NoContent from '@/components/NoContent/NoContent';
 import Button from '@/components/Button/Button';
 import { useAuth } from '@/context/AuthContext';
+import { useNavigation } from '@react-navigation/native';
 
 const StyledSafeAreaView = styled(SafeAreaView);
 const StyledText = styled(Text);
@@ -16,9 +17,18 @@ const StyledScrollView = styled(ScrollView);
 
 const ReportActivities = () => {
   const { checkAuth } = useAuth();
+  const navigation = useNavigation();
 
   useEffect(() => {
-    checkAuth();
+    const verifyAuth = async () => {
+      try {
+        await checkAuth();
+      } catch (error) {
+        navigation.navigate('login');
+      }
+    };
+
+    verifyAuth();
   }, []);
 
   const route = useRoute();

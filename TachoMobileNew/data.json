@@ -42498,60 +42498,6 @@
           ]
         }
       ]
-    },
-    "2": {
-      "ddd_file_url": "http://127.0.0.1:8000/media/driver_files/412.ddd",
-      "events": [],
-      "faults": [],
-      "driver_activities": []
-    },
-    "3": {
-      "ddd_file_url": "http://127.0.0.1:8000/media/driver_files/412.ddd",
-      "events": [],
-      "faults": [],
-      "driver_activities": []
-    },
-    "4": {
-      "ddd_file_url": "http://127.0.0.1:8000/media/driver_files/412.ddd",
-      "events": [],
-      "faults": [],
-      "driver_activities": []
-    },
-    "5": {
-      "ddd_file_url": "http://127.0.0.1:8000/media/driver_files/412.ddd",
-      "events": [],
-      "faults": [],
-      "driver_activities": []
-    },
-    "6": {
-      "ddd_file_url": "http://127.0.0.1:8000/media/driver_files/412.ddd",
-      "events": [],
-      "faults": [],
-      "driver_activities": []
-    },
-    "7": {
-      "ddd_file_url": "http://127.0.0.1:8000/media/driver_files/412.ddd",
-      "events": [],
-      "faults": [],
-      "driver_activities": []
-    },
-    "8": {
-      "ddd_file_url": "http://127.0.0.1:8000/media/driver_files/412.ddd",
-      "events": [],
-      "faults": [],
-      "driver_activities": []
-    },
-    "9": {
-      "ddd_file_url": "http://127.0.0.1:8000/media/driver_files/412.ddd",
-      "events": [],
-      "faults": [],
-      "driver_activities": []
-    },
-    "10": {
-      "ddd_file_url": "http://127.0.0.1:8000/media/driver_files/412.ddd",
-      "events": [],
-      "faults": [],
-      "driver_activities": []
     }
   }
 }

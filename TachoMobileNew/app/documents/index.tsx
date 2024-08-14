@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import data from '@/dokumenty.json';
 import { Text, View, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
@@ -11,6 +10,7 @@ import moment from 'moment';
 import { useAuth } from '@/context/AuthContext';
 import useDocuments from '@/hooks/useDocuments';
 import LoadingPage from '@/components/LoadingPage/LoadingPage';
+import { useNavigation } from '@react-navigation/native';
 
 const StyledSafeAreaView = styled(SafeAreaView);
 const StyledText = styled(Text);
@@ -21,9 +21,18 @@ const DocumentsScreen = () => {
   const { checkAuth, user } = useAuth();
   const [expanded, setExpanded] = useState([]);
   const { documents, loading, error } = useDocuments(user?.id);
+  const navigation = useNavigation();
 
   useEffect(() => {
-    checkAuth();
+    const verifyAuth = async () => {
+      try {
+        await checkAuth();
+      } catch (error) {
+        navigation.navigate('login');
+      }
+    };
+
+    verifyAuth();
   }, []);
 
   const keysToFilter = ['id', 'user_id', 'updated_at'];

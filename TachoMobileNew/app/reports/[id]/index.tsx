@@ -13,14 +13,21 @@ const StyledText = styled(Text);
 
 const ReportDetails = () => {
   const { checkAuth } = useAuth();
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { id } = route.params;
 
   useEffect(() => {
-    checkAuth();
-  }, []);
+    const verifyAuth = async () => {
+      try {
+        await checkAuth();
+      } catch (error) {
+        navigation.navigate('login');
+      }
+    };
 
-  const route = useRoute();
-  const navigation = useNavigation();
-  const { id } = route.params;
+    verifyAuth();
+  }, []);
 
   const handleEventsPress = () => {
     navigation.navigate('reportEvents', { id });
