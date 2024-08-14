@@ -1,23 +1,19 @@
 import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {ScrollView, View} from 'react-native';
+import {ScrollView} from 'react-native';
 import {styled} from 'nativewind';
-import {BackBtn, LogoImage, ReadersElements} from '@/components';
+import {ReadersElements, Heading} from '@/components';
+import {useTranslation} from 'react-i18next';
 
 const StyledSafeAreaView = styled(SafeAreaView);
 const StyledScrollView = styled(ScrollView);
-const StyledView = styled(View);
 
 const ReadersScreen = () => {
+  const {t} = useTranslation();
   return (
-    <StyledSafeAreaView className="flex-1 bg-lightGray">
+    <StyledSafeAreaView className="flex-1 bg-darkPurple pt-6">
       <StyledScrollView contentContainerStyle={{flexGrow: 1}}>
-        <StyledView className="px-4">
-          <StyledView className="relative w-[100%] flex justify-center items-center mb-12">
-            <LogoImage size={1} />
-            <BackBtn />
-          </StyledView>
-        </StyledView>
+        <Heading title={t('Sklep')} classes="mb-12" />
         <ReadersElements />
       </StyledScrollView>
     </StyledSafeAreaView>

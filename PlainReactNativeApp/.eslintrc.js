@@ -19,5 +19,7 @@ module.exports = {
     'no-unused-vars': 'error',
     'react-hooks/exhaustive-deps': 'off',
     'react-native/no-inline-styles': 'off',
+    'no-control-regex': 'off',
+    'no-bitwise': 'off',
   },
 };

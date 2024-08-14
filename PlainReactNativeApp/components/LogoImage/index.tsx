@@ -13,8 +13,8 @@ const LogoImage: React.FC<ILogoImage> = ({classes, size}) => {
   const createClassName = () => {
     let name =
       size === 1
-        ? 'w-[240px] h-[60px]  mx-auto'
-        : 'w-[320px] h-[80px]  mx-auto';
+        ? 'w-[140px] h-[70px]  mx-auto'
+        : 'w-[200px] h-[100px]  mx-auto';
 
     if (!classes) {
       return name;
@@ -31,7 +31,7 @@ const LogoImage: React.FC<ILogoImage> = ({classes, size}) => {
   return (
     <StyledImage
       className={createClassName(classes)}
-      source={require('../../assets/images/logo_tachoapp.png')}
+      source={require('../../assets/images/tacho_logo.webp')}
     />
   );
 };

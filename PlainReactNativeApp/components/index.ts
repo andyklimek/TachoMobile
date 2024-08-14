@@ -13,3 +13,5 @@ export {default as Box} from './Box';
 export {default as Button} from './Button';
 export {default as DataElement} from './DataElement';
 export {default as DropdownPicker} from './DropdownPicker';
+export {default as Faq} from './Faq';
+export {default as Mail} from './Mail';

@@ -20,34 +20,34 @@ const ReportDetailsScreen = () => {
   };
 
   return (
-    <StyledSafeAreaView className="flex-1 bg-lightGray">
+    <StyledSafeAreaView className="flex-1 bg-darkPurple pt-6">
       <StyledScrollView contentContainerStyle={{flexGrow: 1}}>
+        <Heading title={moment(date).format('DD/MM/YYYY')} classes="mb-10" />
         <StyledView className="flex-1 px-4">
-          <Heading title={moment(date).format('DD/MM/YYYY')} classes="mb-6" />
           <Button
             text="Wydarzenia"
             onPress={() => handlePress('reportDetailsEvents', id)}
-            className="rounded-lg bg-darkBlue p-2 mb-3"
+            className="rounded-lg bg-lightPurple p-2 mb-3"
           />
           <Button
             text="Naruszenia"
             onPress={() => handlePress('reportDetailsEvents', id)}
-            className="rounded-lg bg-darkBlue p-2 mb-3"
+            className="rounded-lg bg-lightPurple p-2 mb-3"
           />
           <Button
             text="Miejsca"
             onPress={() => handlePress('reportDetailsPlaces', id)}
-            className="rounded-lg bg-darkBlue p-2 mb-3"
+            className="rounded-lg bg-lightPurple p-2 mb-3"
           />
           <Button
             text="Pojazdy"
             onPress={() => handlePress('reportDetailsVehicles', id)}
-            className="rounded-lg bg-darkBlue p-2 mb-3"
+            className="rounded-lg bg-lightPurple p-2 mb-3"
           />
           <Button
             text="Aktywności"
             onPress={() => handlePress('reportDetailsActivities', id)}
-            className="rounded-lg bg-darkBlue p-2 mb-3"
+            className="rounded-lg bg-lightPurple p-2 mb-3"
           />
         </StyledView>
       </StyledScrollView>

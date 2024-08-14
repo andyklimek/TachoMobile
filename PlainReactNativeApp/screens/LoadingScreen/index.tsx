@@ -7,8 +7,8 @@ const StyledSafeAreaView = styled(SafeAreaView);
 
 const LoadingScreen: React.FC = () => {
   return (
-    <StyledSafeAreaView className="flex-1 justify-center items-center bg-lightGray">
-      <ActivityIndicator size="large" color="#9DB2BF" />
+    <StyledSafeAreaView className="flex-1 justify-center items-center bg-darkPurple">
+      <ActivityIndicator size="large" color="#ffffff" />
     </StyledSafeAreaView>
   );
 };

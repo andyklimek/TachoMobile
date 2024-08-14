@@ -12,7 +12,7 @@ interface INoContent {
 const NoContent: React.FC<INoContent> = ({elementName = 'elementów'}) => {
   return (
     <StyledView className="flex-1 items-center justify-center">
-      <StyledText className="text-center text-lg text-darkGray">
+      <StyledText className="text-center text-lg text-slate-200 -translate-y-10">
         Brak {elementName} do wyświetlenia
       </StyledText>
     </StyledView>

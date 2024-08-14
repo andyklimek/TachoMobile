@@ -19,7 +19,7 @@ const BackBtn = () => {
       className="btn z-50 absolute left-0"
       onPress={handlePress}>
       <StyledView>
-        {<ChevronLeft className="text-darkBlue" size={40} />}
+        {<ChevronLeft className="text-slate-200" size={40} />}
       </StyledView>
     </StyledTouchableOpacity>
   );

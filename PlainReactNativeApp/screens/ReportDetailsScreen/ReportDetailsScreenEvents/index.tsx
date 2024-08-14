@@ -21,17 +21,17 @@ const ReportDetailsScreenEvents = () => {
     return <LoadingScreen />;
   }
 
-  const reportEvents = report[id].events;
+  const reportEvents = report.events || [];
 
   return (
-    <StyledSafeAreaView className="flex-1 bg-lightGray">
+    <StyledSafeAreaView className="flex-1 bg-darkPurple pt-6">
       <StyledScrollView contentContainerStyle={{flexGrow: 1}}>
         <StyledView className="flex-1 px-4">
-          <Heading title="Wydarzenia" classes="mb-6" />
-          {reportEvents.length === 0 || error ? (
+          <Heading title="Wydarzenia" classes="mb-10" />
+          {reportEvents.length === 0 || !reportEvents || error ? (
             <NoContent elementName="wydarzeń" />
           ) : (
-            reportEvents.map((event, idx) => (
+            reportEvents?.map((event, idx) => (
               <DataElement
                 key={idx}
                 title={moment(event.end_time).format('DD/MM/YYYY/HH:mm')}

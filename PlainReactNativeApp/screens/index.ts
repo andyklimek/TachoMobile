@@ -12,3 +12,4 @@ export {default as ReportDetailsScreenVehicles} from './ReportDetailsScreen/Repo
 export {default as ReportDetailsScreenPlaces} from './ReportDetailsScreen/ReportDetailsScreenPlaces';
 export {default as ReportDetailsScreenActivities} from './ReportDetailsScreen/ReportDetailsScreenActivities';
 export {default as ReportDetailsScreenActivitiesData} from './ReportDetailsScreen/ReportDetailsScreenActivities/ReportDetailsScreenActivitiesData';
+export {default as CardReaderScreen} from './CardReaderScreen';

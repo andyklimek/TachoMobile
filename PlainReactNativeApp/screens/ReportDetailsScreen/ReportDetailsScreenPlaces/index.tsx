@@ -21,13 +21,13 @@ const ReportDetailsScreenPlaces = () => {
     return <LoadingScreen />;
   }
 
-  const reportPlaces = report[id].places;
+  const reportPlaces = report.places || [];
 
   return (
-    <StyledSafeAreaView className="flex-1 bg-lightGray">
+    <StyledSafeAreaView className="flex-1 bg-darkPurple pt-6">
       <StyledScrollView contentContainerStyle={{flexGrow: 1}}>
         <StyledView className="flex-1 px-4">
-          <Heading title="Miejsca" classes="mb-6" />
+          <Heading title="Miejsca" classes="mb-10" />
           {reportPlaces.length === 0 || error ? (
             <NoContent elementName="miejsc" />
           ) : (

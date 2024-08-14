@@ -26,13 +26,13 @@ const ReportDetailsScreenActivities = () => {
     navigation.navigate('reportDetailsActivitiesData', {id, date});
   };
 
-  const reportActivities = report[id].driver_activities;
+  const reportActivities = report.driver_activities || [];
 
   return (
-    <StyledSafeAreaView className="flex-1 bg-lightGray">
+    <StyledSafeAreaView className="flex-1 bg-darkPurple pt-6">
       <StyledScrollView contentContainerStyle={{flexGrow: 1}}>
         <StyledView className="flex-1 px-4">
-          <Heading title="Aktywności" classes="mb-6" />
+          <Heading title="Aktywności" classes="mb-10" />
           {reportActivities.length === 0 || error ? (
             <NoContent elementName="wydarzeń" />
           ) : (
@@ -40,7 +40,7 @@ const ReportDetailsScreenActivities = () => {
               <Button
                 key={idx}
                 text={moment(activity.date).format('DD/MM/YYYY')}
-                className="rounded-lg bg-darkBlue p-2 mb-3"
+                className="rounded-lg bg-lightPurple p-2 mb-3"
                 onPress={() => handlePress(activity.date)}
               />
             ))

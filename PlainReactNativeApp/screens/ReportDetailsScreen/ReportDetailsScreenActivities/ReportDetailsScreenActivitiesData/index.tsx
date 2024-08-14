@@ -21,15 +21,15 @@ const ReportDetailsScreenActivitiesData = () => {
     return <LoadingScreen />;
   }
 
-  const reportActivities = report[id].driver_activities.find(
-    activity => activity.date === date,
-  ).activity_changes;
+  const reportActivities =
+    report.driver_activities.find(activity => activity.date === date)
+      .activity_changes || [];
 
   return (
-    <StyledSafeAreaView className="flex-1 bg-lightGray">
+    <StyledSafeAreaView className="flex-1 bg-darkPurple pt-6">
       <StyledScrollView contentContainerStyle={{flexGrow: 1}}>
         <StyledView className="flex-1 px-4">
-          <Heading title={moment(date).format('DD/MM/YYYY')} classes="mb-6" />
+          <Heading title={moment(date).format('DD/MM/YYYY')} classes="mb-10" />
           {reportActivities.length === 0 || error ? (
             <NoContent elementName="aktywności" />
           ) : (

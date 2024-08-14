@@ -21,13 +21,13 @@ const ReportDetailsScreenVehicles = () => {
     return <LoadingScreen />;
   }
 
-  const reportVehicles = report[id].vehicles;
+  const reportVehicles = report.vehicles || [];
 
   return (
-    <StyledSafeAreaView className="flex-1 bg-lightGray">
+    <StyledSafeAreaView className="flex-1 bg-darkPurple pt-6">
       <StyledScrollView contentContainerStyle={{flexGrow: 1}}>
+        <Heading title="Pojazdy" classes="mb-10" />
         <StyledView className="flex-1 px-4">
-          <Heading title="Pojazdy" classes="mb-6" />
           {reportVehicles.length === 0 || error ? (
             <NoContent elementName="pojazdów" />
           ) : (

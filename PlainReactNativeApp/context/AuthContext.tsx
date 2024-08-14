@@ -23,7 +23,6 @@ const AuthProvider: React.FC = ({children}) => {
   }, []);
 
   const login = async (username: string, password: string) => {
-    setLoading(true);
     try {
       const response = await axiosInstance.post('/auth/login/', {
         username,
@@ -37,8 +36,6 @@ const AuthProvider: React.FC = ({children}) => {
       setUser(jwtDecode(token));
     } catch (error) {
       return Promise.reject(error);
-    } finally {
-      setLoading(false);
     }
   };
 

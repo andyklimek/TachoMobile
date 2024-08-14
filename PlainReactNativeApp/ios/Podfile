@@ -1,4 +1,48 @@
-platform :ios, '14.0' # Try setting it to iOS 14.0
+# platform :ios, '14.0'
+
+# require 'json'
+# require 'pathname'
+# require Pod::Executable.execute_command('node', ['-p',
+#   'require.resolve("react-native/scripts/react_native_pods.rb")']).strip
+
+# prepare_react_native_project!
+
+# linkage = ENV['USE_FRAMEWORKS']
+# if linkage != nil
+#   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
+#   use_frameworks! :linkage => linkage.to_sym
+# end
+
+# target 'PlainReactNativeApp' do
+#   config = use_native_modules!
+
+#   use_react_native!(
+#     :path => config[:reactNativePath],
+#     # An absolute path to your application root.
+#     :app_path => "#{Pod::Config.instance.installation_root}/.."
+#   )
+
+#   target 'PlainReactNativeAppTests' do
+#     inherit! :complete
+#     # Pods for testing
+#   end
+
+#   post_install do |installer|
+#     react_native_post_install(installer)
+
+#     # Exclude arm64 for iOS Simulator
+#     installer.pods_project.build_configurations.each do |config|
+#       config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
+#     end
+
+#     installer.target_installation_results.pod_target_installation_results.each do |pod_name, target_installation_result|
+#       target_installation_result.native_target.build_configurations.each do |config|
+#         config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
+#       end
+#     end
+#   end
+# end
+platform :ios, '14.0'
 
 require 'json'
 require 'pathname'
@@ -29,5 +73,16 @@ target 'PlainReactNativeApp' do
 
   post_install do |installer|
     react_native_post_install(installer)
+
+    # Exclude arm64 for iOS Simulator
+    installer.pods_project.build_configurations.each do |config|
+      config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
+    end
+
+    installer.target_installation_results.pod_target_installation_results.each do |pod_name, target_installation_result|
+      target_installation_result.native_target.build_configurations.each do |config|
+        config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
+      end
+    end
   end
 end

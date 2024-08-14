@@ -14,9 +14,9 @@ interface IHeading {
 const Heading: React.FC<IHeading> = ({title, classes}) => {
   return (
     <StyledView
-      className={`relative w-[100%] flex justify-center items-center ${classes}`}>
+      className={`relative w-[90vw] flex justify-center items-center mx-auto ${classes}`}>
       <BackBtn />
-      <StyledText className="text-2xl font-semibold text-lightBlue">
+      <StyledText className="text-slate-200 text-3xl font-light">
         {title}
       </StyledText>
     </StyledView>

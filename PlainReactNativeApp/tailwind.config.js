@@ -8,10 +8,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        darkGray: '#9DB2BF',
-        lightGray: '#DDE6ED',
-        darkBlue: '#27374D',
-        lightBlue: '#526D82',
+        lightBeige: '#E9EEF5',
+        darkPurple: '#5958b2',
+        lightPurple: '#8092f4',
+      },
+      fontFamily: {
+        custom: ['Montserrat', 'sans-serif'],
       },
     },
   },

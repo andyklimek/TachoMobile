@@ -59,8 +59,8 @@ const useReport = (id: number) => {
   const [error, setError] = useState<string | null>(null);
 
   const fetchReport = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
       const response = await axiosInstance.get(`/report/${id}/`);
 
       const data = response.data.data;
