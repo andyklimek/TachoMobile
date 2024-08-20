@@ -10,4 +10,4 @@ RCT_EXTERN_METHOD(sendAPDUCommand:(NSArray<NSNumber *> *)apduCommand resolver:(R
 
 @end
 
-//RCT_EXTERN_METHOD(connectReader:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+

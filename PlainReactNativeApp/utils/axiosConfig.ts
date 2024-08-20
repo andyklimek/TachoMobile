@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // };
 
 const axiosInstance = axios.create({
-  baseURL: 'https://tacho.internetstars.pl/api/v1',
+  baseURL: 'http://127.0.0.1:8000/api/v1',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',

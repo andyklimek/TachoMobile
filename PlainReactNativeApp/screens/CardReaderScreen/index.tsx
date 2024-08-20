@@ -41,6 +41,8 @@ const CardReaderScreen = () => {
       await connectAndRead();
       setSuccess(true);
     } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
       setError(err);
     } finally {
       setLoading(false);
