@@ -12,7 +12,7 @@ type SpecialCondition = '00' | '01' | '02' | '03';
 type WorkPeriod = '00' | '01' | '02' | '03' | '04' | '05';
 type ControlTypeBinary = string;
 
-export const useTachographData = () => {
+const useDataMapers = () => {
   const data = useMemo(
     () => ({
       type_of_tachograph_card: {
@@ -239,3 +239,5 @@ export const useTachographData = () => {
     getControlType,
   };
 };
+
+export default useDataMapers;

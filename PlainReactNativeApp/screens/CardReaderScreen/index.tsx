@@ -15,25 +15,17 @@ const StyledSafeAreaView = styled(SafeAreaView);
 
 const CardReaderScreen = () => {
   const {t} = useTranslation();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
-  // const [email, setEmail] = useState(false);
+
   const [error, setError] = useState('');
   const {connectAndRead} = useReaderIOS();
 
-  // useEffect(() => {
-  //   const checkEmail = async () => {
-  //     try {
-  //       const mail = await AsyncStorage.getItem('email');
-  //       setEmail(mail);
-  //     } catch (err) {
-  //       setEmail('');
-  //       setError(err);
-  //     }
-  //   };
-
-  //   checkEmail();
-  // }, []);
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 5000);
+  }, []);
 
   const handlePress = async () => {
     setLoading(true);
