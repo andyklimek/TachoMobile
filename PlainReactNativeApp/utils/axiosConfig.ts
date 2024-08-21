@@ -12,28 +12,29 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // };
 
 const axiosInstance = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api/v1',
+  baseURL: 'https://tacho.internetstars.pl/api/v1',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// axiosInstance.interceptors.request.use(
-//   async config => {
-//     if (config.method !== 'get') {
-//       const csrfToken = await getCsrfToken();
-//       console.log(csrfToken);
-//       if (csrfToken) {
-//         config.headers['X-CSRFToken'] = csrfToken;
-//       }
-//     }
-//     return config;
-//   },
-//   error => {
-//     return Promise.reject(error);
-//   },
-// );
+axiosInstance.interceptors.request.use(
+  async config => {
+    // if (config.method !== 'get') {
+    //   const csrfToken = await getCsrfToken();
+    //   console.log(csrfToken);
+    //   if (csrfToken) {
+    //     config.headers['X-CSRFToken'] = csrfToken;
+    //   }
+    // }
+
+    return config;
+  },
+  error => {
+    return Promise.reject(error);
+  },
+);
 
 axiosInstance.interceptors.response.use(
   response => response,

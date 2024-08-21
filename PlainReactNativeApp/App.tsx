@@ -74,7 +74,7 @@ const Navigator = () => {
 
   return (
     <>
-      {user ? (
+      {!user ? (
         <Stack.Navigator intialRoute="login">
           <Stack.Screen
             name="login"

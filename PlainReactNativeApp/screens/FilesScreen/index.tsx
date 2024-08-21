@@ -1,9 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Button, Heading, NoContent} from '@/components';
 import LoadingScreen from '@/screens/LoadingScreen';
 import {styled} from 'nativewind';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {ScrollView, View, Alert, Platform} from 'react-native';
+import {ScrollView, View, Alert, Platform, RefreshControl} from 'react-native';
 import RNFS from 'react-native-fs';
 import useFiles from '@/hooks/useFiles';
 import {useTranslation} from 'react-i18next';
@@ -13,7 +13,8 @@ const StyledSafeAreaView = styled(SafeAreaView);
 const StyledScrollView = styled(ScrollView);
 
 const FilesScreen = () => {
-  const {files, loading, error} = useFiles();
+  const {files, loading, error, fetchFilesRefresh} = useFiles();
+  const [refreshing, setRefreshing] = useState(false);
   const {t} = useTranslation();
 
   const handlePress = async (fileUrl: string, fileName: string) => {
@@ -40,13 +41,23 @@ const FilesScreen = () => {
     }
   };
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchFilesRefresh();
+    setRefreshing(false);
+  };
+
   if (loading) {
     return <LoadingScreen />;
   }
 
   return (
     <StyledSafeAreaView className="flex-1 bg-darkPurple pt-6">
-      <StyledScrollView contentContainerStyle={{flexGrow: 1}}>
+      <StyledScrollView
+        contentContainerStyle={{flexGrow: 1}}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         <Heading title={t('Pliki')} classes="mb-6" />
         <StyledView className="flex-1 px-4">
           {files.length === 0 || error ? (

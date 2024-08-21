@@ -69,13 +69,31 @@ const useDocuments = (id: number) => {
     }
   };
 
+  const fetchDocumentsRefresh = async () => {
+    try {
+      const response = await axiosInstance.get(`/driver-card/${id}/`);
+      const data = response.data.data;
+
+      setDocuments(data);
+    } catch (err) {
+      setError(err.message || 'An error occurred while fetching documents');
+    }
+  };
+
   useEffect(() => {
     if (id) {
       fetchDocuments(id);
     }
   }, [id]);
 
-  return {documents, loading, error, transformData, translateKey};
+  return {
+    documents,
+    loading,
+    error,
+    transformData,
+    translateKey,
+    fetchDocumentsRefresh,
+  };
 };
 
 export default useDocuments;

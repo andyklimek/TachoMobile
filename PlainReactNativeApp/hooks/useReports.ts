@@ -21,11 +21,23 @@ const useReports = () => {
     }
   };
 
+  const fetchReportsRefresh = async () => {
+    try {
+      const response = await axiosInstance.get('/report/all/');
+
+      const data = response.data.results;
+
+      setReports(data);
+    } catch (err) {
+      setError(err.message || 'An error occurred while fetching the reports');
+    }
+  };
+
   useEffect(() => {
     fetchReports();
   }, []);
 
-  return {reports, loading, error};
+  return {reports, loading, error, fetchReportsRefresh};
 };
 
 export default useReports;
