@@ -178,7 +178,7 @@ const ReportDetailsScreenActivitiesData = () => {
   }
 
   const reportActivities =
-    report.driver_activities.find(activity => activity.date === date)
+    report.driver_activities?.find(activity => activity.date === date)
       .activity_changes || [];
 
   const cleanActivityArray = (data: any[]) => {
@@ -193,7 +193,7 @@ const ReportDetailsScreenActivitiesData = () => {
       } else {
         if (previousActivity) {
           cleanedArray.push({
-            time: previousActivity.startTime,
+            time: previousActivity.startTime.split(':').slice(0, 2).join(':'),
             title: previousActivity.activity,
             icon: getIconForActivity(previousActivity.activity),
             circleColor: getColor(previousActivity.activity),
@@ -215,7 +215,7 @@ const ReportDetailsScreenActivitiesData = () => {
 
     if (previousActivity) {
       cleanedArray.push({
-        time: previousActivity.startTime,
+        time: previousActivity.startTime.split(':').slice(0, 2).join(':'),
         title: previousActivity.activity,
         description: '',
         icon: getIconForActivity(previousActivity.activity),
@@ -253,10 +253,7 @@ const ReportDetailsScreenActivitiesData = () => {
   return (
     <StyledSafeAreaView className="flex-1 bg-darkPurple pt-6">
       <StyledView className="flex-1">
-        <Heading
-          title={moment('2021-01-13T00:00:00').format('DD/MM/YYYY')}
-          classes="mb-2"
-        />
+        <Heading title={moment(date).format('DD/MM/YYYY')} classes="mb-2" />
         {reportActivities.length === 0 || error ? (
           <NoContent elementName="aktywności" />
         ) : (

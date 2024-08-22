@@ -14,8 +14,8 @@ class CardReader: NSObject {
     private let supportedProtocols = [
         "com.ftsafe.ir301",
         "com.ftsafe.iR301",
-        "com.ftsafe.br301",
-        "com.ftsafe.bR301"
+//        "com.ftsafe.br301",
+//        "com.ftsafe.bR301"
     ]
     
     private let accessoryManager = EAAccessoryManager.shared()

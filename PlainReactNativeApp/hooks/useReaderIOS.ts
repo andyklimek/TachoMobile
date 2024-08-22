@@ -16,6 +16,7 @@ const useReaderIOS = () => {
     getHashFileCommand,
     getDigitalSignatureCommand,
     getSelectCommandPrefix,
+    getFileData,
   } = useCommands();
   const {decodeOctetString, decodeToAscii, decodeToInt, decodeToDate} =
     useDecoders();
@@ -34,6 +35,7 @@ const useReaderIOS = () => {
   } = useDataMapers();
   const [connection, setConnection] = useState(0);
   const [preDDD, setPreDDD] = useState([]);
+  const [DDDFormat, setDDDFormat] = useState('');
 
   const headerFiles = useMemo(
     () => [
@@ -212,68 +214,68 @@ const useReaderIOS = () => {
           },
         },
       },
-      {
-        name: 'events_data',
-        needs_signature: true,
-        is_dynamic: true,
-        reading_speed: 0x40,
-        record_size: 24,
-        fields: {
-          event_type: {
-            position: [0, 1],
-            decoder: decodeOctetString,
-            mapper: getEventFaultType,
-          },
-          event_begin_time: {
-            position: [1, 5],
-            decoder: decodeToDate,
-          },
-          event_end_time: {
-            position: [5, 9],
-            decoder: decodeToDate,
-          },
-          vehicle_registration_nation: {
-            position: [9, 10],
-            decoder: decodeOctetString,
-            mapper: getNation,
-          },
-          vehicle_registration_number: {
-            position: [10, 24],
-            decoder: decodeToAscii,
-          },
-        },
-      },
-      {
-        name: 'faults_data',
-        needs_signature: true,
-        is_dynamic: true,
-        reading_speed: 0x40,
-        record_size: 24,
-        fields: {
-          fault_type: {
-            position: [0, 1],
-            decoder: decodeOctetString,
-            mapper: getEventFaultType,
-          },
-          fault_begin_time: {
-            position: [1, 5],
-            decoder: decodeToDate,
-          },
-          fault_end_time: {
-            position: [5, 9],
-            decoder: decodeToDate,
-          },
-          vehicle_registration_nation: {
-            position: [9, 10],
-            decoder: decodeOctetString,
-            mapper: getNation,
-          },
-          vehicle_registration_number: {
-            position: [10, 24],
-            decoder: decodeToAscii,
-          },
-        },
-      },
+      // {
+      //   name: 'events_data',
+      //   needs_signature: true,
+      //   is_dynamic: true,
+      //   reading_speed: 0x40,
+      //   record_size: 24,
+      //   fields: {
+      //     event_type: {
+      //       position: [0, 1],
+      //       decoder: decodeOctetString,
+      //       mapper: getEventFaultType,
+      //     },
+      //     event_begin_time: {
+      //       position: [1, 5],
+      //       decoder: decodeToDate,
+      //     },
+      //     event_end_time: {
+      //       position: [5, 9],
+      //       decoder: decodeToDate,
+      //     },
+      //     vehicle_registration_nation: {
+      //       position: [9, 10],
+      //       decoder: decodeOctetString,
+      //       mapper: getNation,
+      //     },
+      //     vehicle_registration_number: {
+      //       position: [10, 24],
+      //       decoder: decodeToAscii,
+      //     },
+      //   },
+      // },
+      // {
+      //   name: 'faults_data',
+      //   needs_signature: true,
+      //   is_dynamic: true,
+      //   reading_speed: 0x40,
+      //   record_size: 24,
+      //   fields: {
+      //     fault_type: {
+      //       position: [0, 1],
+      //       decoder: decodeOctetString,
+      //       mapper: getEventFaultType,
+      //     },
+      //     fault_begin_time: {
+      //       position: [1, 5],
+      //       decoder: decodeToDate,
+      //     },
+      //     fault_end_time: {
+      //       position: [5, 9],
+      //       decoder: decodeToDate,
+      //     },
+      //     vehicle_registration_nation: {
+      //       position: [9, 10],
+      //       decoder: decodeOctetString,
+      //       mapper: getNation,
+      //     },
+      //     vehicle_registration_number: {
+      //       position: [10, 24],
+      //       decoder: decodeToAscii,
+      //     },
+      //   },
+      // },
       // {
       //   name: 'driver_activity_data',
       //   needs_signature: true,
@@ -291,158 +293,158 @@ const useReaderIOS = () => {
       //     },
       //   },
       // },
-      {
-        name: 'vehicles_used',
-        needs_signature: true,
-        is_dynamic: true,
-        reading_speed: 0x0e,
-        record_size: 31,
-        fields: {
-          vehicle_odometer_begin: {
-            position: [0, 3],
-            decoder: decodeToInt,
-          },
-          vehicle_odometer_end: {
-            position: [3, 6],
-            decoder: decodeToInt,
-          },
-          vehicle_first_use: {
-            position: [6, 10],
-            decoder: decodeToDate,
-          },
-          vehicle_last_use: {
-            position: [10, 14],
-            decoder: decodeToDate,
-          },
-          vehicle_registration_nation: {
-            position: [14, 15],
-            decoder: decodeOctetString,
-            mapper: getNation,
-          },
-          vehicle_registration_number: {
-            position: [15, 29],
-            decoder: decodeToAscii,
-          },
-          vehicle_data_counter: {
-            position: [29, 31],
-            decoder: decodeToInt,
-          },
-        },
-      },
-      {
-        name: 'places',
-        needs_signature: true,
-        is_dynamic: true,
-        reading_speed: 0x3b,
-        record_size: 10,
-        fields: {
-          entry_time: {
-            position: [0, 4],
-            decoder: decodeToDate,
-          },
-          entry_type_work_period: {
-            position: [4, 5],
-            decoder: decodeOctetString,
-            mapper: getTypeWorkPeriod,
-          },
-          daily_work_period_country: {
-            position: [5, 6],
-            decoder: decodeOctetString,
-            mapper: getNation,
-          },
-          daily_work_period_region: {
-            position: [6, 7],
-            decoder: decodeOctetString,
-            mapper: getRegion,
-          },
-          vehicle_odometer_value: {
-            position: [7, 10],
-            decoder: decodeToInt,
-          },
-        },
-      },
-      {
-        name: 'specific_conditions',
-        needs_signature: true,
-        is_dynamic: true,
-        reading_speed: 0x1c,
-        record_size: 5,
-        fields: {
-          entry_time: {
-            position: [0, 4],
-            decoder: decodeToDate,
-          },
-          specific_condition_type: {
-            position: [4, 5],
-            decoder: decodeOctetString,
-            mapper: getSpecialCondition,
-          },
-        },
-      },
-      {
-        name: 'control_activity_data',
-        needs_signature: true,
-        is_dynamic: false,
-        fields: {
-          control_type: {
-            position: [0, 1],
-            decoder: decodeOctetString,
-            mapper: getControlType,
-          },
-          control_time: {
-            position: [1, 5],
-            decoder: decodeToDate,
-          },
-          card_type: {
-            position: [5, 6],
-            decoder: decodeOctetString,
-            mapper: getTachographCardType,
-          },
-          card_issuing_member_state: {
-            position: [6, 7],
-            decoder: decodeOctetString,
-            mapper: getNation,
-          },
-          card_number: {
-            position: [7, 23],
-            decoder: decodeToAscii,
-          },
-          vehicle_registration_nation: {
-            position: [23, 24],
-            decoder: decodeOctetString,
-            mapper: getNation,
-          },
-          vehicle_registration_number: {
-            position: [24, 38],
-            decoder: decodeToAscii,
-          },
-          control_download_period_begin: {
-            position: [38, 42],
-            decoder: decodeToDate,
-          },
-          control_download_period_end: {
-            position: [42, 46],
-            decoder: decodeToDate,
-          },
-        },
-      },
-      {
-        name: 'current_usage',
-        needs_signature: false,
-        is_dynamic: false,
-        fields: {
-          session_open_time: {position: [0, 4], decoder: decodeToDate},
-          vehicle_registration_nation: {
-            position: [4, 5],
-            decoder: decodeOctetString,
-            mapper: getNation,
-          },
-          vehicle_registration_number: {
-            position: [5, 19],
-            decoder: decodeToAscii,
-          },
-        },
-      },
+      // {
+      //   name: 'vehicles_used',
+      //   needs_signature: true,
+      //   is_dynamic: true,
+      //   reading_speed: 0x0e,
+      //   record_size: 31,
+      //   fields: {
+      //     vehicle_odometer_begin: {
+      //       position: [0, 3],
+      //       decoder: decodeToInt,
+      //     },
+      //     vehicle_odometer_end: {
+      //       position: [3, 6],
+      //       decoder: decodeToInt,
+      //     },
+      //     vehicle_first_use: {
+      //       position: [6, 10],
+      //       decoder: decodeToDate,
+      //     },
+      //     vehicle_last_use: {
+      //       position: [10, 14],
+      //       decoder: decodeToDate,
+      //     },
+      //     vehicle_registration_nation: {
+      //       position: [14, 15],
+      //       decoder: decodeOctetString,
+      //       mapper: getNation,
+      //     },
+      //     vehicle_registration_number: {
+      //       position: [15, 29],
+      //       decoder: decodeToAscii,
+      //     },
+      //     vehicle_data_counter: {
+      //       position: [29, 31],
+      //       decoder: decodeToInt,
+      //     },
+      //   },
+      // },
+      // {
+      //   name: 'places',
+      //   needs_signature: true,
+      //   is_dynamic: true,
+      //   reading_speed: 0x3b,
+      //   record_size: 10,
+      //   fields: {
+      //     entry_time: {
+      //       position: [0, 4],
+      //       decoder: decodeToDate,
+      //     },
+      //     entry_type_work_period: {
+      //       position: [4, 5],
+      //       decoder: decodeOctetString,
+      //       mapper: getTypeWorkPeriod,
+      //     },
+      //     daily_work_period_country: {
+      //       position: [5, 6],
+      //       decoder: decodeOctetString,
+      //       mapper: getNation,
+      //     },
+      //     daily_work_period_region: {
+      //       position: [6, 7],
+      //       decoder: decodeOctetString,
+      //       mapper: getRegion,
+      //     },
+      //     vehicle_odometer_value: {
+      //       position: [7, 10],
+      //       decoder: decodeToInt,
+      //     },
+      //   },
+      // },
+      // {
+      //   name: 'specific_conditions',
+      //   needs_signature: true,
+      //   is_dynamic: true,
+      //   reading_speed: 0x1c,
+      //   record_size: 5,
+      //   fields: {
+      //     entry_time: {
+      //       position: [0, 4],
+      //       decoder: decodeToDate,
+      //     },
+      //     specific_condition_type: {
+      //       position: [4, 5],
+      //       decoder: decodeOctetString,
+      //       mapper: getSpecialCondition,
+      //     },
+      //   },
+      // },
+      // {
+      //   name: 'control_activity_data',
+      //   needs_signature: true,
+      //   is_dynamic: false,
+      //   fields: {
+      //     control_type: {
+      //       position: [0, 1],
+      //       decoder: decodeOctetString,
+      //       mapper: getControlType,
+      //     },
+      //     control_time: {
+      //       position: [1, 5],
+      //       decoder: decodeToDate,
+      //     },
+      //     card_type: {
+      //       position: [5, 6],
+      //       decoder: decodeOctetString,
+      //       mapper: getTachographCardType,
+      //     },
+      //     card_issuing_member_state: {
+      //       position: [6, 7],
+      //       decoder: decodeOctetString,
+      //       mapper: getNation,
+      //     },
+      //     card_number: {
+      //       position: [7, 23],
+      //       decoder: decodeToAscii,
+      //     },
+      //     vehicle_registration_nation: {
+      //       position: [23, 24],
+      //       decoder: decodeOctetString,
+      //       mapper: getNation,
+      //     },
+      //     vehicle_registration_number: {
+      //       position: [24, 38],
+      //       decoder: decodeToAscii,
+      //     },
+      //     control_download_period_begin: {
+      //       position: [38, 42],
+      //       decoder: decodeToDate,
+      //     },
+      //     control_download_period_end: {
+      //       position: [42, 46],
+      //       decoder: decodeToDate,
+      //     },
+      //   },
+      // },
+      // {
+      //   name: 'current_usage',
+      //   needs_signature: false,
+      //   is_dynamic: false,
+      //   fields: {
+      //     session_open_time: {position: [0, 4], decoder: decodeToDate},
+      //     vehicle_registration_nation: {
+      //       position: [4, 5],
+      //       decoder: decodeOctetString,
+      //       mapper: getNation,
+      //     },
+      //     vehicle_registration_number: {
+      //       position: [5, 19],
+      //       decoder: decodeToAscii,
+      //     },
+      //   },
+      // },
     ],
     [],
   );
@@ -472,6 +474,60 @@ const useReaderIOS = () => {
     } catch (error) {
       throw Error(error);
     }
+  };
+
+  function hexToBigEndian(hex) {
+    if (hex.startsWith('0x')) {
+      hex = hex.slice(2);
+    }
+
+    if (hex.length % 2 !== 0) {
+      hex = '0' + hex;
+    }
+
+    const byteArray = hex.match(/.{2}/g);
+
+    const bigEndianArray = byteArray.reverse();
+
+    const bigEndianHex = bigEndianArray.join('');
+
+    return bigEndianHex.toString(16).padStart(4, '0').toUpperCase();
+  }
+
+  const convertToDDDFormat = (
+    file: string,
+    byteData: number[],
+    signature: number[] | null,
+  ) => {
+    const {id, size} = getFileData(file);
+
+    const tag = `${id[0].toString(16).padStart(2, '0')}${id[1]
+      .toString(16)
+      .padStart(2, '0')}${(0x00).toString(16).padStart(2, '0')}`;
+
+    const fileHeader = tag + hexToBigEndian(size.toString(16));
+
+    let fileData;
+    if (byteData.length === 0) {
+      fileData = '00'.repeat(size);
+    } else {
+      fileData = byteData
+        .map(byte => byte.toString(16).padStart(2, '0'))
+        .join('');
+    }
+
+    let formattedForDDD = fileHeader + fileData;
+
+    if (signature) {
+      const signatureHex = signature
+        .map(byte => byte.toString(16).padStart(2, '0'))
+        .join('');
+      formattedForDDD += signatureHex;
+    }
+
+    // Convert the final hex string to a binary buffer and return
+    console.log(formattedForDDD);
+    // return Buffer.from(formattedForDDD, 'hex');
   };
 
   const switchToTachoApp = async () => {
@@ -685,7 +741,6 @@ const useReaderIOS = () => {
       if (needs_signature) {
         await sendCommand(getHashFileCommand());
         signature = await sendCommand(getDigitalSignatureCommand());
-        console.log(signature);
       }
 
       let respRead;
@@ -701,6 +756,8 @@ const useReaderIOS = () => {
         const readCommand = getReadBinaryCommand(name);
         respRead = await sendCommand(readCommand);
       }
+
+      convertToDDDFormat(name, respRead, signature);
 
       setPreDDD(prevState => [
         ...prevState,
@@ -767,7 +824,7 @@ const useReaderIOS = () => {
       ...(await processTachoData()),
     };
 
-    console.log(processedData);
+    // console.log(preDDD);
   };
 
   const connectReader = async () => {

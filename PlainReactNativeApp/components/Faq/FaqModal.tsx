@@ -23,7 +23,7 @@ const FaqModal = () => {
     <StyledScrollView contentContainerStyle={{flexGrow: 1}}>
       <StyledView className="gap-12 py-4">
         {Object.keys(qs).map(q => (
-          <StyledView>
+          <StyledView key={q}>
             <StyledText className="font-bold color-darkPurple text-center mb-2">
               {t(q)}
             </StyledText>
