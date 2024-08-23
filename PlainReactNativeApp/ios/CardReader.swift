@@ -1,28 +1,39 @@
 import Foundation
 import ExternalAccessory
 
+// All @objc classes and methods are exposed to React Native
+
 @objc(CardReader)
 class CardReader: NSObject {
+    // Variables to store the reader name, context handle, device list, and card handle
+    // These variables are used to interact with the smart card reader
     public var readerName: String = ""
     public var gContxtHandle: SCARDCONTEXT = 0
     public var deviceList: [String] = []
     public var cardHandle: SCARDHANDLE = 0
-    
+
     private let maxAttempts = 5
     private let scanInterval: TimeInterval = 7.0
     private let retryInterval: TimeInterval = 1.0
+
+    // List of supported protocols for the smart card reader
+    // BT interfaces - no suported/commented out
     private let supportedProtocols = [
         "com.ftsafe.ir301",
         "com.ftsafe.iR301",
 //        "com.ftsafe.br301",
 //        "com.ftsafe.bR301"
     ]
-    
-    private let accessoryManager = EAAccessoryManager.shared()
-    
-    private let SCARD_E_NO_SMARTCARD: Int64 = 0x8010000C
-    private let SCARD_E_READER_UNAVAILABLE: Int64 = 0x80100017 
 
+
+    private let accessoryManager = EAAccessoryManager.shared()
+
+    private let SCARD_E_NO_SMARTCARD: Int64 = 0x8010000C
+    private let SCARD_E_READER_UNAVAILABLE: Int64 = 0x80100017
+
+    // Function to establish a context
+    // This function is called before any other function to ensure a context is established
+    // The context is required to interact with the smart card reader
     @objc
     func establishContext() {
         cleanupContext()  // Ensure previous context is cleaned up
@@ -32,7 +43,7 @@ class CardReader: NSObject {
 
             var contextHandle: SCARDCONTEXT = 0
             let result = SCardEstablishContext(DWORD(SCARD_SCOPE_SYSTEM), nil, nil, &contextHandle)
-            
+
             if result != SCARD_S_SUCCESS {
                 print("Failed to establish context: \(result)")
             } else {
@@ -41,7 +52,11 @@ class CardReader: NSObject {
             }
         }
     }
-    
+
+    // Function to cleanup the context
+    // This function is called when the module is deallocated
+    // This is important to avoid memory leaks
+    // The context should be cleaned to avoid issues with establishing a new context
     @objc
     func cleanupContext() {
         if gContxtHandle != 0 {
@@ -51,13 +66,15 @@ class CardReader: NSObject {
         }
     }
 
+    // Function to scan for devices
+    // This function is called to scan for devices that match the supported protocols
     private func scanDevice() async -> Bool {
         print("Waiting before scanning for devices...")
         try? await Task.sleep(nanoseconds: UInt64(2 * 1_000_000_000)) // 2-second delay
 
         print("Scanning for devices...")
-        
-        // Get the list of connected accessories that match our supported protocols
+
+        // Get the list of connected accessories that match our supported protocols - facilitate native modules (EAAccessoryManager) instead of using those from SDK
         let connectedAccessories = accessoryManager.connectedAccessories
         for accessory in connectedAccessories {
             for protocolString in accessory.protocolStrings {
@@ -68,10 +85,11 @@ class CardReader: NSObject {
                 }
             }
         }
-        
+
         return !self.deviceList.isEmpty
     }
 
+    // Function to get the list of devices - async function
     @objc
     func getDeviceListPromise(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
         Task {
@@ -83,26 +101,28 @@ class CardReader: NSObject {
             }
         }
     }
-    
+
+    // Function to get the list of devices - makes maxAttempts number of iterations to scan for devices
     private func getDeviceList() async throws -> [String] {
         self.deviceList.removeAll()
-        
+
         var counter = 0
         while counter < maxAttempts && self.deviceList.isEmpty {
             if counter != 0 {
                 self.establishContext()
             }
-            
+
             if await scanDevice() {
                 return self.deviceList
             }
             counter += 1
             try await Task.sleep(nanoseconds: UInt64(1 * 1_000_000_000))
         }
-        
+
         throw NSError(domain: "CardReaderError", code: 0, userInfo: [NSLocalizedDescriptionKey: "No devices found after \(maxAttempts) attempts"])
     }
 
+    // Function to wait for card insertion to avoid errors when connecting to the card
     private func waitForCardInsertion(readerName: String) async throws {
         var readerState = SCARD_READERSTATE()
         readerName.withCString { cString in
@@ -135,6 +155,9 @@ class CardReader: NSObject {
         }
     }
 
+    // Function to connect to the reader
+    // This function is called to connect to the reader
+    // The function waits for the card to be inserted before connecting
     @objc
     func connectReader(_ readerName: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
         Task {
@@ -168,7 +191,7 @@ class CardReader: NSObject {
                                                        DWORD(SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1),
                                                        &cardHandle,
                                                        &dwActiveProtocol)
-                        
+
                         if retryResult == SCARD_S_SUCCESS {
                             self.cardHandle = cardHandle
                             print("Connected to reader on attempt \(attempt): \(readerName)")
@@ -187,7 +210,10 @@ class CardReader: NSObject {
             }
         }
     }
-  
+
+
+    // Function to send the APDU commands to the card
+    // This function allows communication between the app and reader
     @objc
     func sendAPDUCommand(_ apduCommand: [UInt8], resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
         // Ensure the card is connected
