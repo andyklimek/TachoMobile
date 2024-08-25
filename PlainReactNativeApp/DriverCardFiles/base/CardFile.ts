@@ -1,29 +1,42 @@
+import useApduCommand from '@/hooks/useApduCommand';
 
-class CardFile {
-    fileId: number[];
-    name: string;
-    needsSignature: boolean;
+type BytePositionSlice = [number, number];
+type decoderFunction = (data: number[]) => any;
 
-    selectCommand: number[];
-    readCommand: number[];
+interface DataField {
+  position: BytePositionSlice;
+  decoder: decoderFunction;
+}
 
-    constructor(name: string, fileId:number[], needs_signature: boolean = false) {
-        this.name = name;
-        this.fileId = fileId
-        this.needsSignature = needs_signature
-    }
+interface DataFields {
+  [key: string]: DataField;
+}
 
-    createSelectCommand() {
-        
-    }
+export default class CardFile {
+  fileId: number[];
+  name: string;
+  needsSignature: boolean;
 
-    createReadCommand() {}
+  dataFields: DataFields;
 
-    getSelectCommand(): number[] {
-        return this.selectCommand
-    }
+  selectCommand: number[];
 
-    getReadCommand(): number[] {
-        return this.readCommand
-    }
+  constructor(
+    name: string,
+    fileId: number[],
+    dataFields: DataFields,
+    needs_signature: boolean = false,
+  ) {
+    this.name = name;
+    this.fileId = fileId;
+    this.dataFields = dataFields;
+    this.needsSignature = needs_signature;
+
+    const commandBuilder = useApduCommand();
+    this.selectCommand = commandBuilder.createSelectCommand(this.fileId);
+  }
+
+  getSelectCommand(): number[] {
+    return this.selectCommand;
+  }
 }
