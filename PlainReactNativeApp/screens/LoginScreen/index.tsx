@@ -1,5 +1,5 @@
-import React from 'react';
-import {Text} from 'react-native';
+import React, {useEffect} from 'react';
+import {NativeModules, Text} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {styled} from 'nativewind';
 import {LoginForm, LogoImage} from '@/components';
