@@ -1,5 +1,6 @@
 import CardFile from '../base/CardFile';
 import useDecoders from '@/hooks/useDecoders';
+import useDataMapers from '@/hooks/useDataMaper';
 
 //TODO: Mappers
 
@@ -10,6 +11,7 @@ export class Ic extends CardFile {
     super(
       'ic',
       [0x00, 0x05],
+      0x08,
       {
         ic_serial_number: {position: [0, 4], decoder: decodeOctetString},
         ic_manufacturing_reference: {
@@ -29,6 +31,7 @@ export class Icc extends CardFile {
     super(
       'icc',
       [0x00, 0x02],
+      0x19,
       {
         clock_stop: {position: [0, 1], decoder: decodeOctetString},
         card_extended_serial_number: {
@@ -58,10 +61,12 @@ export class Icc extends CardFile {
 export class ApplicationIdentification extends CardFile {
   constructor() {
     const {decodeOctetString, decodeToInt} = useDecoders();
+    const {getTachographCardType} = useDataMapers();
 
     super(
       'application_identification',
       [0x05, 0x01],
+      0x0a,
       {
         type_of_tachograph_card_id: {
           position: [0, 1],
@@ -105,6 +110,7 @@ export class CardCertificate extends CardFile {
     super(
       'card_certificate',
       [0xc1, 0x00],
+      0xc2,
       {
         card_certificate: {position: [0, 194], decoder: decodeOctetString},
       },
@@ -120,6 +126,7 @@ export class CaCertificate extends CardFile {
     super(
       'ca_certificate',
       [0xc1, 0x08],
+      0xc2,
       {
         member_state_certificate: {
           position: [0, 194],
@@ -138,6 +145,7 @@ export class Identification extends CardFile {
     super(
       'identification',
       [0x05, 0x20],
+      0x8f,
       {
         card_issuing_member_state: {
           position: [0, 1],
@@ -193,6 +201,7 @@ export class CardDownload extends CardFile {
     super(
       'card_download',
       [0x05, 0x0e],
+      0x04,
       {
         last_card_download: {position: [0, 4], decoder: decodeToDate},
       },
@@ -208,6 +217,7 @@ export class DrivingLicenceInfo extends CardFile {
     super(
       'driving_licence_info',
       [0x05, 0x21],
+      0x35,
       {
         last_card_download: {position: [0, 4], decoder: decodeToDate},
       },

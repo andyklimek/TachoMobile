@@ -1,6 +1,9 @@
 import {useMemo} from 'react';
+import {NativeModules} from 'react-native';
 
 const useApduCommand = () => {
+  const {CardReader} = NativeModules;
+
   const commandData = useMemo(
     () => ({
       select_tacho_app: [
@@ -40,12 +43,22 @@ const useApduCommand = () => {
   const getHashDataCommand = (fileId: number[]): number[] =>
     commandData.hash_file;
 
+  const makeCommand = async (command: number[]) => {
+    try {
+      const resp = CardReader.sendAPDUCommand(command);
+      return resp.slice(0, -2);
+    } catch (e) {
+      throw Error(e as string);
+    }
+  };
+
   return {
     selectTachoAppCommand,
     createSelectCommand,
     createReadBinaryCommand,
     getDigitalSignatureCommand,
     getHashDataCommand,
+    makeCommand,
   };
 };
 

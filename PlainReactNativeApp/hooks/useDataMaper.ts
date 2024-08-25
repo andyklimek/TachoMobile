@@ -1,6 +1,14 @@
 import {useMemo} from 'react';
 
-type TachographCardType = '00' | '01' | '02' | '03' | '04' | '05' | '06' | '07';
+export type TachographCardType =
+  | '00'
+  | '01'
+  | '02'
+  | '03'
+  | '04'
+  | '05'
+  | '06'
+  | '07';
 type NationCode = string;
 type EventFaultType = string;
 type SlotValue = '0' | '1';
@@ -194,7 +202,7 @@ const useDataMapers = () => {
     [],
   );
 
-  const getTachographCardType = (type: TachographCardType) =>
+  const getTachographCardType = (type: TachographCardType): string =>
     data.type_of_tachograph_card[type];
   const getNation = (nationCode: NationCode) =>
     data.nation[nationCode] || 'RFU';
