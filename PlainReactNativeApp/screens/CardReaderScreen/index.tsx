@@ -59,7 +59,16 @@ const CardReaderScreen = () => {
 
   return (
     <StyledSafeAreaView className="flex-1 bg-darkPurple justify-start items-center pt-6">
-      <Heading title={t('Odczyt karty')} />
+      <StyledView className="flex justify-start items-center flex-col mb-4">
+        <Heading title={t('Odczyt karty')} classes="mb-2" />
+        <StyledText className="text-slate-200">
+          {`${t('Ostatni odczyt')}:`}
+        </StyledText>
+        <StyledText className="text-slate-200 font-semibold">
+          22.08.2024 12:53
+        </StyledText>
+      </StyledView>
+
       <StyledTouchableOpacity
         className="btn bg-slate-200 w-[70vw] p-3 mb-4 rounded-xl aspect-square shadow-xl absolute top-[50%] -translate-y-20"
         onPress={handlePress}
