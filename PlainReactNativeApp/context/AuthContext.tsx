@@ -3,7 +3,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '@/utils/axiosConfig';
 import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
-// import CookieManager from '@react-native-cookies/cookies';
 
 interface AuthContextProps {
   user: any;
@@ -53,15 +52,6 @@ const AuthProvider: React.FC = ({children}) => {
         axiosInstance.defaults.headers.common[
           'Authorization'
         ] = `Bearer ${token}`;
-
-        // await CookieManager.set('http://127.0.0.1:8000', {
-        //   name: 'access_token',
-        //   value: token,
-        //   path: '/',
-        //   secure: true,
-        //   httpOnly: true,
-        //   sameSite: 'Lax',
-        // });
 
         await axiosInstance.post('/auth/verify/');
         setUser(jwtDecode(token));

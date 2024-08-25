@@ -13,7 +13,7 @@ const StyledScrollView = styled(ScrollView);
 const ReportDetailsScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const {id, date} = route.params;
+  const {id, date, idx} = route.params;
 
   const handlePress = (nav: string) => {
     navigation.navigate(nav, {id});
@@ -22,7 +22,10 @@ const ReportDetailsScreen = () => {
   return (
     <StyledSafeAreaView className="flex-1 bg-darkPurple pt-6">
       <StyledScrollView contentContainerStyle={{flexGrow: 1}}>
-        <Heading title={moment(date).format('DD/MM/YYYY')} classes="mb-10" />
+        <Heading
+          title={`${moment(date).format('DD/MM/YYYY')}/${idx + 1}`}
+          classes="mb-10"
+        />
         <StyledView className="flex-1 px-4">
           <Button
             text="Wydarzenia"

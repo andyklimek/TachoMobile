@@ -19,8 +19,8 @@ const ReportsScreen = () => {
   const {reports, loading, error, fetchReportsRefresh} = useReports();
   const [refreshing, setRefreshing] = useState(false);
 
-  const handlePress = (id, date) => {
-    navigation.navigate('reportDetails', {id, date});
+  const handlePress = (id, date, idx) => {
+    navigation.navigate('reportDetails', {id, date, idx});
   };
 
   const onRefresh = async () => {
@@ -48,8 +48,10 @@ const ReportsScreen = () => {
             reports.map((report, idx) => (
               <Button
                 key={idx}
-                onPress={() => handlePress(report.id, report.created_at)}
-                text={moment(report.created_at).format('DD/MM/YYYY')}
+                onPress={() => handlePress(report.id, report.created_at, idx)}
+                text={`${moment(report.created_at).format('DD/MM/YYYY')}/${
+                  idx + 1
+                }`}
                 className="rounded-lg bg-lightPurple p-2 mb-2"
               />
             ))

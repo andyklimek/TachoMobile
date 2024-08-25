@@ -39,9 +39,7 @@ const ReportDetailsScreenActivities = () => {
             reportActivities.map((activity, idx) => (
               <Button
                 key={idx}
-                text={`${moment(activity.date).format('DD/MM/YYYY')}/${
-                  idx + 1
-                }`}
+                text={`${moment(activity.date).format('DD/MM/YYYY')}`}
                 className="rounded-lg bg-lightPurple p-2 mb-3"
                 onPress={() => handlePress(activity.date)}
               />
