@@ -53,7 +53,7 @@ class CardReader: NSObject {
 
     private func scanDevice() async -> Bool {
         print("Waiting before scanning for devices...")
-        try? await Task.sleep(nanoseconds: UInt64(2 * 1_000_000_000)) 
+        try? await Task.sleep(nanoseconds: UInt64(2 * 1_000_000_000))
 
         print("Scanning for devices...")
         
