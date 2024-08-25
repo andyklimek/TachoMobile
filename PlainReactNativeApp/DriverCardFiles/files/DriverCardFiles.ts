@@ -6,28 +6,26 @@ import useDataMapers from '@/hooks/useDataMaper';
 
 export class Ic extends CardFile {
   constructor() {
-    const {decodeOctetString} = useDecoders();
-
     super(
       'ic',
       [0x00, 0x05],
       0x08,
       {
-        ic_serial_number: {position: [0, 4], decoder: decodeOctetString},
+        ic_serial_number: {position: [0, 4], decoder: this.decodeOctetString},
         ic_manufacturing_reference: {
           position: [4, 8],
-          decoder: decodeOctetString,
+          decoder: this.decodeOctetString,
         },
       },
       false,
     );
   }
+
+  private decodeOctetString = useDecoders().decodeOctetString;
 }
 
 export class Icc extends CardFile {
   constructor() {
-    const {decodeOctetString, decodeToAscii} = useDecoders();
-
     super(
       'icc',
       [0x00, 0x02],
@@ -56,13 +54,13 @@ export class Icc extends CardFile {
       false,
     );
   }
+
+  private decodeOctetString = useDecoders().decodeOctetString;
+  private decodeToAscii = useDecoders().decodeToAscii;
 }
 
 export class ApplicationIdentification extends CardFile {
   constructor() {
-    const {decodeOctetString, decodeToInt} = useDecoders();
-    const {getTachographCardType} = useDataMapers();
-
     super(
       'application_identification',
       [0x05, 0x01],
@@ -101,12 +99,14 @@ export class ApplicationIdentification extends CardFile {
       true,
     );
   }
+
+  private decodeOctetString = useDecoders().decodeOctetString;
+  private decodeToInt = useDecoders().decodeToInt;
+  private getTachographCardType = useDataMapers().getTachographCardType;
 }
 
 export class CardCertificate extends CardFile {
   constructor() {
-    const {decodeOctetString} = useDecoders();
-
     super(
       'card_certificate',
       [0xc1, 0x00],
@@ -117,12 +117,12 @@ export class CardCertificate extends CardFile {
       true,
     );
   }
+
+  private decodeOctetString = useDecoders().decodeOctetString;
 }
 
 export class CaCertificate extends CardFile {
   constructor() {
-    const {decodeOctetString} = useDecoders();
-
     super(
       'ca_certificate',
       [0xc1, 0x08],
@@ -136,12 +136,12 @@ export class CaCertificate extends CardFile {
       true,
     );
   }
+
+  private decodeOctetString = useDecoders().decodeOctetString;
 }
 
 export class Identification extends CardFile {
   constructor() {
-    const {decodeOctetString, decodeToDate, decodeToAscii} = useDecoders();
-
     super(
       'identification',
       [0x05, 0x20],
@@ -192,12 +192,14 @@ export class Identification extends CardFile {
       true,
     );
   }
+
+  private decodeOctetString = useDecoders().decodeOctetString;
+  private decodeToDate = useDecoders().decodeToDate;
+  private decodeToAscii = useDecoders().decodeToAscii;
 }
 
 export class CardDownload extends CardFile {
   constructor() {
-    const {decodeToDate} = useDecoders();
-
     super(
       'card_download',
       [0x05, 0x0e],
@@ -208,12 +210,12 @@ export class CardDownload extends CardFile {
       false,
     );
   }
+
+  private decodeToDate = useDecoders().decodeToDate;
 }
 
 export class DrivingLicenceInfo extends CardFile {
   constructor() {
-    const {decodeToDate} = useDecoders();
-
     super(
       'driving_licence_info',
       [0x05, 0x21],
@@ -224,4 +226,6 @@ export class DrivingLicenceInfo extends CardFile {
       false,
     );
   }
+
+  private decodeToDate = useDecoders().decodeToDate;
 }
