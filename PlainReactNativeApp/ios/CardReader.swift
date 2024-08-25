@@ -25,7 +25,7 @@ class CardReader: NSObject {
 
     @objc
     func establishContext() {
-        cleanupContext()  // Ensure previous context is cleaned up
+        cleanupContext()
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
             guard let self = self else { return }
@@ -53,18 +53,17 @@ class CardReader: NSObject {
 
     private func scanDevice() async -> Bool {
         print("Waiting before scanning for devices...")
-        try? await Task.sleep(nanoseconds: UInt64(2 * 1_000_000_000)) // 2-second delay
+        try? await Task.sleep(nanoseconds: UInt64(2 * 1_000_000_000)) 
 
         print("Scanning for devices...")
         
-        // Get the list of connected accessories that match our supported protocols
         let connectedAccessories = accessoryManager.connectedAccessories
         for accessory in connectedAccessories {
             for protocolString in accessory.protocolStrings {
                 if supportedProtocols.contains(protocolString) {
                     print("Found supported device: \(accessory.name)")
                     self.deviceList.append(accessory.name)
-                    self.readerName = accessory.name // Set the reader name to the found accessory
+                    self.readerName = accessory.name
                 }
             }
         }
@@ -190,7 +189,6 @@ class CardReader: NSObject {
   
     @objc
     func sendAPDUCommand(_ apduCommand: [UInt8], resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
-        // Ensure the card is connected
         guard self.cardHandle != 0 else {
             reject("NOT_CONNECTED", "No card connected", nil)
             return
@@ -210,7 +208,6 @@ class CardReader: NSObject {
                                &pcbRecvLength)
 
         if rv == SCARD_S_SUCCESS {
-            // Truncate the buffer to the actual received length
             let receivedData = Array(pbRecvBuffer.prefix(Int(pcbRecvLength)))
             resolve(receivedData)
         } else {
