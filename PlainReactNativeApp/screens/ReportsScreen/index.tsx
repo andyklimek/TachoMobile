@@ -4,14 +4,13 @@ import LoadingScreen from '@/screens/LoadingScreen';
 import {useNavigation} from '@react-navigation/native';
 import {styled} from 'nativewind';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {ScrollView, View, RefreshControl} from 'react-native';
+import {RefreshControl, FlatList} from 'react-native';
 import useReports from '@/hooks/useReports';
 import moment from 'moment';
 import {useTranslation} from 'react-i18next';
 
-const StyledView = styled(View);
+const StyledFlatList = styled(FlatList);
 const StyledSafeAreaView = styled(SafeAreaView);
-const StyledScrollView = styled(ScrollView);
 
 const ReportsScreen = () => {
   const navigation = useNavigation();
@@ -35,29 +34,28 @@ const ReportsScreen = () => {
 
   return (
     <StyledSafeAreaView className="flex-1 bg-darkPurple pt-6">
-      <StyledScrollView
+      <Heading title={t('Raporty')} classes="mb-10" />
+
+      {(reports.length === 0 || error) && <NoContent elementName="raportów" />}
+
+      <StyledFlatList
+        className="px-4"
         contentContainerStyle={{flexGrow: 1}}
+        data={reports}
+        showsVerticalScrollIndicator={false}
+        renderItem={({item}) => (
+          <Button
+            key={item.id}
+            text={`${moment(item.created_at).format('DD/MM/YYYY')}/${item.id}`}
+            onPress={() => handlePress(item.id, item.created_at, item.id)}
+            className="rounded-lg bg-lightPurple p-2 mb-2"
+          />
+        )}
+        keyExtractor={item => item.id}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
-        <Heading title={t('Raporty')} classes="mb-10" />
-        <StyledView className="flex-1 px-4">
-          {reports.length === 0 || error ? (
-            <NoContent elementName="raportów" />
-          ) : (
-            reports.map((report, idx) => (
-              <Button
-                key={idx}
-                onPress={() => handlePress(report.id, report.created_at, idx)}
-                text={`${moment(report.created_at).format('DD/MM/YYYY')}/${
-                  idx + 1
-                }`}
-                className="rounded-lg bg-lightPurple p-2 mb-2"
-              />
-            ))
-          )}
-        </StyledView>
-      </StyledScrollView>
+        }
+      />
     </StyledSafeAreaView>
   );
 };

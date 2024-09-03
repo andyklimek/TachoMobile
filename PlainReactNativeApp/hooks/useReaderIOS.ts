@@ -35,7 +35,7 @@ const useReaderIOS = () => {
   } = useDataMapers();
   const [connection, setConnection] = useState(0);
   const [preDDD, setPreDDD] = useState([]);
-  const [DDDFormat, setDDDFormat] = useState('');
+  const [DDDFormat, setDDDFormat] = useState([]);
 
   const headerFiles = useMemo(
     () => [
@@ -214,237 +214,237 @@ const useReaderIOS = () => {
           },
         },
       },
-      // {
-      //   name: 'events_data',
-      //   needs_signature: true,
-      //   is_dynamic: true,
-      //   reading_speed: 0x40,
-      //   record_size: 24,
-      //   fields: {
-      //     event_type: {
-      //       position: [0, 1],
-      //       decoder: decodeOctetString,
-      //       mapper: getEventFaultType,
-      //     },
-      //     event_begin_time: {
-      //       position: [1, 5],
-      //       decoder: decodeToDate,
-      //     },
-      //     event_end_time: {
-      //       position: [5, 9],
-      //       decoder: decodeToDate,
-      //     },
-      //     vehicle_registration_nation: {
-      //       position: [9, 10],
-      //       decoder: decodeOctetString,
-      //       mapper: getNation,
-      //     },
-      //     vehicle_registration_number: {
-      //       position: [10, 24],
-      //       decoder: decodeToAscii,
-      //     },
-      //   },
-      // },
-      // {
-      //   name: 'faults_data',
-      //   needs_signature: true,
-      //   is_dynamic: true,
-      //   reading_speed: 0x40,
-      //   record_size: 24,
-      //   fields: {
-      //     fault_type: {
-      //       position: [0, 1],
-      //       decoder: decodeOctetString,
-      //       mapper: getEventFaultType,
-      //     },
-      //     fault_begin_time: {
-      //       position: [1, 5],
-      //       decoder: decodeToDate,
-      //     },
-      //     fault_end_time: {
-      //       position: [5, 9],
-      //       decoder: decodeToDate,
-      //     },
-      //     vehicle_registration_nation: {
-      //       position: [9, 10],
-      //       decoder: decodeOctetString,
-      //       mapper: getNation,
-      //     },
-      //     vehicle_registration_number: {
-      //       position: [10, 24],
-      //       decoder: decodeToAscii,
-      //     },
-      //   },
-      // },
-      // {
-      //   name: 'driver_activity_data',
-      //   needs_signature: true,
-      //   is_dynamic: true,
-      //   reading_speed: 0x41,
-      //   record_size: 12,
-      //   fields: {
-      //     activity_pointer_oldest_record: {
-      //       position: [0, 2],
-      //       decoder: decodeToInt,
-      //     },
-      //     activity_pointer_newest_record: {
-      //       position: [2, 4],
-      //       decoder: decodeToInt,
-      //     },
-      //   },
-      // },
-      // {
-      //   name: 'vehicles_used',
-      //   needs_signature: true,
-      //   is_dynamic: true,
-      //   reading_speed: 0x0e,
-      //   record_size: 31,
-      //   fields: {
-      //     vehicle_odometer_begin: {
-      //       position: [0, 3],
-      //       decoder: decodeToInt,
-      //     },
-      //     vehicle_odometer_end: {
-      //       position: [3, 6],
-      //       decoder: decodeToInt,
-      //     },
-      //     vehicle_first_use: {
-      //       position: [6, 10],
-      //       decoder: decodeToDate,
-      //     },
-      //     vehicle_last_use: {
-      //       position: [10, 14],
-      //       decoder: decodeToDate,
-      //     },
-      //     vehicle_registration_nation: {
-      //       position: [14, 15],
-      //       decoder: decodeOctetString,
-      //       mapper: getNation,
-      //     },
-      //     vehicle_registration_number: {
-      //       position: [15, 29],
-      //       decoder: decodeToAscii,
-      //     },
-      //     vehicle_data_counter: {
-      //       position: [29, 31],
-      //       decoder: decodeToInt,
-      //     },
-      //   },
-      // },
-      // {
-      //   name: 'places',
-      //   needs_signature: true,
-      //   is_dynamic: true,
-      //   reading_speed: 0x3b,
-      //   record_size: 10,
-      //   fields: {
-      //     entry_time: {
-      //       position: [0, 4],
-      //       decoder: decodeToDate,
-      //     },
-      //     entry_type_work_period: {
-      //       position: [4, 5],
-      //       decoder: decodeOctetString,
-      //       mapper: getTypeWorkPeriod,
-      //     },
-      //     daily_work_period_country: {
-      //       position: [5, 6],
-      //       decoder: decodeOctetString,
-      //       mapper: getNation,
-      //     },
-      //     daily_work_period_region: {
-      //       position: [6, 7],
-      //       decoder: decodeOctetString,
-      //       mapper: getRegion,
-      //     },
-      //     vehicle_odometer_value: {
-      //       position: [7, 10],
-      //       decoder: decodeToInt,
-      //     },
-      //   },
-      // },
-      // {
-      //   name: 'specific_conditions',
-      //   needs_signature: true,
-      //   is_dynamic: true,
-      //   reading_speed: 0x1c,
-      //   record_size: 5,
-      //   fields: {
-      //     entry_time: {
-      //       position: [0, 4],
-      //       decoder: decodeToDate,
-      //     },
-      //     specific_condition_type: {
-      //       position: [4, 5],
-      //       decoder: decodeOctetString,
-      //       mapper: getSpecialCondition,
-      //     },
-      //   },
-      // },
-      // {
-      //   name: 'control_activity_data',
-      //   needs_signature: true,
-      //   is_dynamic: false,
-      //   fields: {
-      //     control_type: {
-      //       position: [0, 1],
-      //       decoder: decodeOctetString,
-      //       mapper: getControlType,
-      //     },
-      //     control_time: {
-      //       position: [1, 5],
-      //       decoder: decodeToDate,
-      //     },
-      //     card_type: {
-      //       position: [5, 6],
-      //       decoder: decodeOctetString,
-      //       mapper: getTachographCardType,
-      //     },
-      //     card_issuing_member_state: {
-      //       position: [6, 7],
-      //       decoder: decodeOctetString,
-      //       mapper: getNation,
-      //     },
-      //     card_number: {
-      //       position: [7, 23],
-      //       decoder: decodeToAscii,
-      //     },
-      //     vehicle_registration_nation: {
-      //       position: [23, 24],
-      //       decoder: decodeOctetString,
-      //       mapper: getNation,
-      //     },
-      //     vehicle_registration_number: {
-      //       position: [24, 38],
-      //       decoder: decodeToAscii,
-      //     },
-      //     control_download_period_begin: {
-      //       position: [38, 42],
-      //       decoder: decodeToDate,
-      //     },
-      //     control_download_period_end: {
-      //       position: [42, 46],
-      //       decoder: decodeToDate,
-      //     },
-      //   },
-      // },
-      // {
-      //   name: 'current_usage',
-      //   needs_signature: false,
-      //   is_dynamic: false,
-      //   fields: {
-      //     session_open_time: {position: [0, 4], decoder: decodeToDate},
-      //     vehicle_registration_nation: {
-      //       position: [4, 5],
-      //       decoder: decodeOctetString,
-      //       mapper: getNation,
-      //     },
-      //     vehicle_registration_number: {
-      //       position: [5, 19],
-      //       decoder: decodeToAscii,
-      //     },
-      //   },
-      // },
+      {
+        name: 'events_data',
+        needs_signature: true,
+        is_dynamic: true,
+        reading_speed: 0x40,
+        record_size: 24,
+        fields: {
+          event_type: {
+            position: [0, 1],
+            decoder: decodeOctetString,
+            mapper: getEventFaultType,
+          },
+          event_begin_time: {
+            position: [1, 5],
+            decoder: decodeToDate,
+          },
+          event_end_time: {
+            position: [5, 9],
+            decoder: decodeToDate,
+          },
+          vehicle_registration_nation: {
+            position: [9, 10],
+            decoder: decodeOctetString,
+            mapper: getNation,
+          },
+          vehicle_registration_number: {
+            position: [10, 24],
+            decoder: decodeToAscii,
+          },
+        },
+      },
+      {
+        name: 'faults_data',
+        needs_signature: true,
+        is_dynamic: true,
+        reading_speed: 0x40,
+        record_size: 24,
+        fields: {
+          fault_type: {
+            position: [0, 1],
+            decoder: decodeOctetString,
+            mapper: getEventFaultType,
+          },
+          fault_begin_time: {
+            position: [1, 5],
+            decoder: decodeToDate,
+          },
+          fault_end_time: {
+            position: [5, 9],
+            decoder: decodeToDate,
+          },
+          vehicle_registration_nation: {
+            position: [9, 10],
+            decoder: decodeOctetString,
+            mapper: getNation,
+          },
+          vehicle_registration_number: {
+            position: [10, 24],
+            decoder: decodeToAscii,
+          },
+        },
+      },
+      {
+        name: 'driver_activity_data',
+        needs_signature: true,
+        is_dynamic: true,
+        reading_speed: 0x41,
+        record_size: 12,
+        fields: {
+          activity_pointer_oldest_record: {
+            position: [0, 2],
+            decoder: decodeToInt,
+          },
+          activity_pointer_newest_record: {
+            position: [2, 4],
+            decoder: decodeToInt,
+          },
+        },
+      },
+      {
+        name: 'vehicles_used',
+        needs_signature: true,
+        is_dynamic: true,
+        reading_speed: 0x0e,
+        record_size: 31,
+        fields: {
+          vehicle_odometer_begin: {
+            position: [0, 3],
+            decoder: decodeToInt,
+          },
+          vehicle_odometer_end: {
+            position: [3, 6],
+            decoder: decodeToInt,
+          },
+          vehicle_first_use: {
+            position: [6, 10],
+            decoder: decodeToDate,
+          },
+          vehicle_last_use: {
+            position: [10, 14],
+            decoder: decodeToDate,
+          },
+          vehicle_registration_nation: {
+            position: [14, 15],
+            decoder: decodeOctetString,
+            mapper: getNation,
+          },
+          vehicle_registration_number: {
+            position: [15, 29],
+            decoder: decodeToAscii,
+          },
+          vehicle_data_counter: {
+            position: [29, 31],
+            decoder: decodeToInt,
+          },
+        },
+      },
+      {
+        name: 'places',
+        needs_signature: true,
+        is_dynamic: true,
+        reading_speed: 0x3b,
+        record_size: 10,
+        fields: {
+          entry_time: {
+            position: [0, 4],
+            decoder: decodeToDate,
+          },
+          entry_type_work_period: {
+            position: [4, 5],
+            decoder: decodeOctetString,
+            mapper: getTypeWorkPeriod,
+          },
+          daily_work_period_country: {
+            position: [5, 6],
+            decoder: decodeOctetString,
+            mapper: getNation,
+          },
+          daily_work_period_region: {
+            position: [6, 7],
+            decoder: decodeOctetString,
+            mapper: getRegion,
+          },
+          vehicle_odometer_value: {
+            position: [7, 10],
+            decoder: decodeToInt,
+          },
+        },
+      },
+      {
+        name: 'specific_conditions',
+        needs_signature: true,
+        is_dynamic: true,
+        reading_speed: 0x1c,
+        record_size: 5,
+        fields: {
+          entry_time: {
+            position: [0, 4],
+            decoder: decodeToDate,
+          },
+          specific_condition_type: {
+            position: [4, 5],
+            decoder: decodeOctetString,
+            mapper: getSpecialCondition,
+          },
+        },
+      },
+      {
+        name: 'control_activity_data',
+        needs_signature: true,
+        is_dynamic: false,
+        fields: {
+          control_type: {
+            position: [0, 1],
+            decoder: decodeOctetString,
+            mapper: getControlType,
+          },
+          control_time: {
+            position: [1, 5],
+            decoder: decodeToDate,
+          },
+          card_type: {
+            position: [5, 6],
+            decoder: decodeOctetString,
+            mapper: getTachographCardType,
+          },
+          card_issuing_member_state: {
+            position: [6, 7],
+            decoder: decodeOctetString,
+            mapper: getNation,
+          },
+          card_number: {
+            position: [7, 23],
+            decoder: decodeToAscii,
+          },
+          vehicle_registration_nation: {
+            position: [23, 24],
+            decoder: decodeOctetString,
+            mapper: getNation,
+          },
+          vehicle_registration_number: {
+            position: [24, 38],
+            decoder: decodeToAscii,
+          },
+          control_download_period_begin: {
+            position: [38, 42],
+            decoder: decodeToDate,
+          },
+          control_download_period_end: {
+            position: [42, 46],
+            decoder: decodeToDate,
+          },
+        },
+      },
+      {
+        name: 'current_usage',
+        needs_signature: false,
+        is_dynamic: false,
+        fields: {
+          session_open_time: {position: [0, 4], decoder: decodeToDate},
+          vehicle_registration_nation: {
+            position: [4, 5],
+            decoder: decodeOctetString,
+            mapper: getNation,
+          },
+          vehicle_registration_number: {
+            position: [5, 19],
+            decoder: decodeToAscii,
+          },
+        },
+      },
     ],
     [],
   );
@@ -464,12 +464,12 @@ const useReaderIOS = () => {
   const sendCommand = async (command: number[]): Promise<number[]> => {
     try {
       const resp = await CardReader.sendAPDUCommand(command);
-
       // console.log(resp.slice(resp.length - 2));
       // if (resp[resp.length - 2] != 144 && resp[resp.length - 1] != 0) {
       //   console.log(command);
       //   throw Error('Invalid response');
       // }
+      // console.log(resp, resp.slice(resp.length - 2));
       return resp.slice(0, -2);
     } catch (error) {
       throw Error(error);
@@ -519,6 +519,11 @@ const useReaderIOS = () => {
     let formattedForDDD = fileHeader + fileData;
 
     if (signature) {
+      const endTag = `${id[0].toString(16).padStart(2, '0')}${id[1]
+        .toString(16)
+        .padStart(2, '0')}${(0x01).toString(16).padStart(2, '0')}`;
+      formattedForDDD += endTag;
+
       const signatureHex = signature
         .map(byte => byte.toString(16).padStart(2, '0'))
         .join('');
@@ -526,8 +531,9 @@ const useReaderIOS = () => {
     }
 
     // Convert the final hex string to a binary buffer and return
-    console.log(formattedForDDD);
+    // setDDDFormat(prevState => [...prevState, formattedForDDD]);
     // return Buffer.from(formattedForDDD, 'hex');
+    // console.log(formattedForDDD);
   };
 
   const switchToTachoApp = async () => {
@@ -600,6 +606,8 @@ const useReaderIOS = () => {
         },
       ]);
 
+      convertToDDDFormat(name, respRead);
+
       const decodedData = Object.keys(fields).reduce((acc, field) => {
         const {position, decoder} = fields[field];
         let value;
@@ -617,106 +625,106 @@ const useReaderIOS = () => {
     return readedData;
   };
 
-  // const processDriverActivityData = async () => {
-  //   const fileConfig = tachoFiles.find(
-  //     file => file.name === 'driver_activity_data',
-  //   );
+  const processDriverActivityData = async () => {
+    const fileConfig = tachoFiles.find(
+      file => file.name === 'driver_activity_data',
+    );
 
-  //   if (!fileConfig) {
-  //     throw new Error('Driver activity data configuration not found');
-  //   }
+    if (!fileConfig) {
+      throw new Error('Driver activity data configuration not found');
+    }
 
-  //   const {fields, reading_speed} = fileConfig;
+    const {fields, reading_speed} = fileConfig;
 
-  //   const selectCommand = getSelectFileCommand(fileConfig.name);
+    const selectCommand = getSelectFileCommand(fileConfig.name);
 
-  //   const respRead = await readDynamicLengthFile(
-  //     selectCommand,
-  //     [0x00, 0xb0],
-  //     reading_speed,
-  //   );
+    const respRead = await readDynamicLengthFile(
+      selectCommand,
+      [0x00, 0xb0],
+      reading_speed,
+    );
 
-  //   console.log(respRead);
+    console.log(respRead);
 
-  //   const oldestRecordPointer = decodeToInt(
-  //     respRead.slice(
-  //       fields.activity_pointer_oldest_record.position[0],
-  //       fields.activity_pointer_oldest_record.position[1],
-  //     ),
-  //   );
-  //   const newestRecordPointer = decodeToInt(
-  //     respRead.slice(
-  //       fields.activity_pointer_newest_record.position[0],
-  //       fields.activity_pointer_newest_record.position[1],
-  //     ),
-  //   );
+    const oldestRecordPointer = decodeToInt(
+      respRead.slice(
+        fields.activity_pointer_oldest_record.position[0],
+        fields.activity_pointer_oldest_record.position[1],
+      ),
+    );
+    const newestRecordPointer = decodeToInt(
+      respRead.slice(
+        fields.activity_pointer_newest_record.position[0],
+        fields.activity_pointer_newest_record.position[1],
+      ),
+    );
 
-  //   console.log(oldestRecordPointer, newestRecordPointer);
+    console.log(oldestRecordPointer, newestRecordPointer);
 
-  //   const records = [];
-  //   let pointer = newestRecordPointer;
+    const records = [];
+    let pointer = newestRecordPointer;
 
-  //   while (true) {
-  //     if (pointer < 0) {
-  //       pointer = respRead.length + pointer;
-  //     }
+    while (true) {
+      if (pointer < 0) {
+        pointer = respRead.length + pointer;
+      }
 
-  //     const generalActivityInfo = respRead.slice(pointer, pointer + 13); // Assuming 12 bytes for general activity info
-  //     const recordLength = decodeToInt(generalActivityInfo.slice(2, 4));
+      const generalActivityInfo = respRead.slice(pointer, pointer + 13); // Assuming 12 bytes for general activity info
+      const recordLength = decodeToInt(generalActivityInfo.slice(2, 4));
 
-  //     const activityChangeInfo = respRead.slice(
-  //       pointer + 12,
-  //       pointer + recordLength,
-  //     );
+      const activityChangeInfo = respRead.slice(
+        pointer + 12,
+        pointer + recordLength,
+      );
 
-  //     // Decode general info
-  //     const record = {
-  //       previous_length: decodeToInt(generalActivityInfo.slice(0, 2)),
-  //       record_length: recordLength,
-  //       date: decodeToDate(generalActivityInfo.slice(4, 8)),
-  //       presence_counter: decodeToInt(generalActivityInfo.slice(8, 10)),
-  //       day_distance: decodeToInt(generalActivityInfo.slice(10, 12)),
-  //       activity_changes: [],
-  //     };
+      // Decode general info
+      const record = {
+        previous_length: decodeToInt(generalActivityInfo.slice(0, 2)),
+        record_length: recordLength,
+        date: decodeToDate(generalActivityInfo.slice(4, 8)),
+        presence_counter: decodeToInt(generalActivityInfo.slice(8, 10)),
+        day_distance: decodeToInt(generalActivityInfo.slice(10, 12)),
+        activity_changes: [],
+      };
 
-  //     // Decode each activity change
-  //     for (let i = 0; i < activityChangeInfo.length; i += 2) {
-  //       const change = decodeOctetString(activityChangeInfo.slice(i, i + 2));
-  //       const binaryStr = parseInt(change, 16).toString(2).padStart(16, '0');
-  //       const slot = getSlotValue(binaryStr[4]);
-  //       const drivingStatus = getDrivingStatus(binaryStr[5]);
-  //       const cardStatus = getCardStatus(binaryStr[6]);
-  //       const activity = getActivity(binaryStr.slice(7, 9));
+      // Decode each activity change
+      for (let i = 0; i < activityChangeInfo.length; i += 2) {
+        const change = decodeOctetString(activityChangeInfo.slice(i, i + 2));
+        const binaryStr = parseInt(change, 16).toString(2).padStart(16, '0');
+        const slot = getSlotValue(binaryStr[4]);
+        const drivingStatus = getDrivingStatus(binaryStr[5]);
+        const cardStatus = getCardStatus(binaryStr[6]);
+        const activity = getActivity(binaryStr.slice(7, 9));
 
-  //       const hours = parseInt(binaryStr.slice(-11, -6), 2);
-  //       const minutes = parseInt(binaryStr.slice(-6), 2);
+        const hours = parseInt(binaryStr.slice(-11, -6), 2);
+        const minutes = parseInt(binaryStr.slice(-6), 2);
 
-  //       const timeOfChange = new Date();
-  //       timeOfChange.setHours(hours, minutes);
+        const timeOfChange = new Date();
+        timeOfChange.setHours(hours, minutes);
 
-  //       record.activity_changes.push({
-  //         slot,
-  //         driving_status: drivingStatus,
-  //         card_status: cardStatus,
-  //         activity,
-  //         time_of_change: timeOfChange,
-  //       });
-  //     }
+        record.activity_changes.push({
+          slot,
+          driving_status: drivingStatus,
+          card_status: cardStatus,
+          activity,
+          time_of_change: timeOfChange,
+        });
+      }
 
-  //     records.push(record);
+      records.push(record);
 
-  //     if (pointer === oldestRecordPointer) {
-  //       break;
-  //     }
+      if (pointer === oldestRecordPointer) {
+        break;
+      }
 
-  //     pointer -= decodeToInt(generalActivityInfo.slice(0, 2));
-  //   }
+      pointer -= decodeToInt(generalActivityInfo.slice(0, 2));
+    }
 
-  //   // Sort records by date if needed
-  //   records.sort((a, b) => a.date - b.date);
+    // Sort records by date if needed
+    records.sort((a, b) => a.date - b.date);
 
-  //   return records;
-  // };
+    return records;
+  };
 
   const processTachoData = async () => {
     const readedData = {};
@@ -736,6 +744,7 @@ const useReaderIOS = () => {
       // }
 
       const selectCommand = getSelectFileCommand(name);
+      await sendCommand(selectCommand);
 
       let signature = null;
       if (needs_signature) {
@@ -744,7 +753,6 @@ const useReaderIOS = () => {
       }
 
       let respRead;
-
       if (is_dynamic) {
         respRead = await readDynamicLengthFile(
           selectCommand,
@@ -815,6 +823,7 @@ const useReaderIOS = () => {
       readedData[name] = decodedData;
     }
 
+    console.log(readedData);
     return readedData;
   };
 
@@ -824,12 +833,15 @@ const useReaderIOS = () => {
       ...(await processTachoData()),
     };
 
+    // console.log(DDDFormat.join(''));
+
     // console.log(preDDD);
   };
 
   const connectReader = async () => {
     try {
       const deviceList = await CardReader.getDeviceListPromise();
+      console.log(deviceList);
       const readerResp = await CardReader.connectReader(deviceList[0]);
 
       setConnection(readerResp);

@@ -6,6 +6,7 @@ import {Heading} from '@/components';
 import {useTranslation} from 'react-i18next';
 import {ScanEye, MailCheck, CircleX} from 'lucide-react-native';
 import useReaderIOS from '@/hooks/useReaderIOS';
+import useCardReader from '@/hooks/useCardReader';
 
 const StyledTouchableOpacity = styled(TouchableOpacity);
 const StyledText = styled(Text);
@@ -19,7 +20,8 @@ const CardReaderScreen = () => {
   const [success, setSuccess] = useState(false);
 
   const [error, setError] = useState('');
-  const {connectAndRead} = useReaderIOS();
+  const {connectAndRead, connectReader} = useReaderIOS();
+  const {readData, sendDataToServer} = useCardReader();
 
   useEffect(() => {
     setTimeout(() => {
@@ -30,7 +32,9 @@ const CardReaderScreen = () => {
   const handlePress = async () => {
     setLoading(true);
     try {
-      await connectAndRead();
+      await connectReader();
+      await readData();
+      await sendDataToServer();
       setSuccess(true);
     } catch (err) {
       // eslint-disable-next-line no-console

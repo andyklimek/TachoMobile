@@ -1,6 +1,3 @@
-import useApduCommand from '@/hooks/useApduCommand';
-import {NativeModules} from 'react-native';
-
 type BytePositionSlice = [number, number];
 type decoderFunction = (data: number[]) => any;
 // type mapperFunction = (data: string) => any;
@@ -23,6 +20,8 @@ export default class CardFile {
   dataFields: DataFields;
 
   needsSignature: boolean;
+  signature: number[];
+  dddFormat: string;
   selectCommand: number[];
   readCommand: number[];
 
@@ -35,29 +34,57 @@ export default class CardFile {
     fileSize: number,
     dataFields: DataFields,
     needsSignature: boolean = false,
+    sendCommand: (command: number[]) => Promise<number[]>,
   ) {
     this.name = name;
     this.fileId = fileId;
     this.fileSize = fileSize;
-
     this.dataFields = dataFields;
-
+    this.sendCommand = sendCommand;
     this.needsSignature = needsSignature;
 
-    const commandBuilder = useApduCommand();
-    this.selectCommand = commandBuilder.createSelectCommand(this.fileId);
-    this.readCommand = commandBuilder.createReadBinaryCommand(
-      [0, 0],
+    this.commandData = {
+      select_tacho_app: [
+        0x00, 0xa4, 0x04, 0x0c, 0x06, 0xff, 0x54, 0x41, 0x43, 0x48, 0x4f,
+      ],
+      hash_file: [0x80, 0x2a, 0x90, 0x00],
+      compute_digital_signature: [0x00, 0x2a, 0x9e, 0x9a, 0x80],
+      select_command_prefix: [0x00, 0xa4, 0x02, 0x0c, 0x02],
+      read_binary_prefix: [0x00, 0xb0],
+      default_offset: [0x00, 0x00],
+    };
+
+    this.statusData = {
+      success_command: [144, 0],
+    };
+
+    this.selectCommand = this.createSelectCommand(this.fileId);
+    this.readCommand = this.createReadBinaryCommand(
+      this.commandData.default_offset,
       this.fileSize,
     );
+
+    this.decodersMapper = {
+      decodeOctetString: this.decodeOctetString,
+      decodeToAscii: this.decodeToAscii,
+      decodeToInt: this.decodeToInt,
+      decodeToDate: this.decodeToDate,
+    };
   }
 
   async readData() {
-    const commandBuilder = useApduCommand();
-    commandBuilder.makeCommand(this.selectCommand);
+    await this.sendCommand(this.selectCommand);
 
-    this.processedData = await commandBuilder.makeCommand(this.readCommand);
+    if (this.needsSignature) {
+      await this.sendCommand(this.getHashDataCommand());
+      this.signature = await this.sendCommand(
+        this.getDigitalSignatureCommand(),
+      );
+    }
+
+    this.processedData = await this.sendCommand(this.readCommand);
     this.decodedData = this.decodeData();
+    this.dddFormat = this.convertToDdd();
   }
 
   decodeData() {
@@ -73,11 +100,286 @@ export default class CardFile {
 
       const slice = this.processedData.slice(start, end);
 
-      decoded[key] = decoder(slice);
+      decoded[key] = this.decodersMapper[decoder](slice);
     }
 
     return decoded;
   }
 
-  convertToDdd() {}
+  createSelectCommand = (fileId: number[]): number[] => [
+    ...this.commandData.select_command_prefix,
+    ...fileId,
+  ];
+
+  createReadBinaryCommand = (
+    offset: number[],
+    expected_bytes: number,
+  ): number[] => [
+    ...this.commandData.read_binary_prefix,
+    ...offset,
+    expected_bytes,
+  ];
+
+  getDigitalSignatureCommand = (): number[] =>
+    this.commandData.compute_digital_signature;
+
+  getHashDataCommand = (): number[] => this.commandData.hash_file;
+
+  decodeOctetString = (encodedData: number[]): string => {
+    const decodedData = encodedData
+      .map(octet => octet.toString(16).padStart(2, '0'))
+      .join('');
+    return decodedData.trim();
+  };
+
+  decodeToAscii = (encodedData: number[]): string => {
+    const decodedString = encodedData
+      .map(byte => String.fromCharCode(byte))
+      .join('');
+
+    return decodedString
+      .replace(/^\x01+/, '')
+      .replace(/^\x02+/, '')
+      .trim();
+  };
+
+  decodeToInt = (encodedData: number[]): number => {
+    const byteData = new Uint8Array(encodedData);
+    return parseInt(byteData.join(''), 10);
+  };
+
+  decodeToDate = (encodedData: number[], onlyDate = false): string => {
+    if (encodedData.length !== 4) {
+      throw new Error(
+        'encodedData must be exactly 4 bytes long to decode into a date.',
+      );
+      return '';
+    }
+
+    const hexString = this.decodeOctetString(encodedData);
+
+    if (!onlyDate) {
+      const timestamp = parseInt(hexString, 16);
+      const date = new Date(timestamp * 1000);
+      return date.toISOString();
+    } else {
+      const year = parseInt(hexString.slice(0, 4), 16);
+      const month = parseInt(hexString.slice(4, 6), 16);
+      const day = parseInt(hexString.slice(6, 8), 16);
+      const date = new Date(year, month - 1, day);
+      return date.toISOString().split('T')[0].trim();
+    }
+  };
+
+  hexToBigEndian(hex) {
+    if (hex.startsWith('0x')) {
+      hex = hex.slice(2);
+    }
+
+    if (hex.length % 2 !== 0) {
+      hex = '0' + hex;
+    }
+
+    const byteArray = hex.match(/.{2}/g);
+
+    const bigEndianArray = byteArray.reverse();
+
+    const bigEndianHex = bigEndianArray.join('');
+
+    return bigEndianHex.toString(16).padStart(4, '0').toUpperCase();
+  }
+
+  // convertToDdd() {
+  //   const tag = `${this.fileId[0].toString(16).padStart(2, '0')}${this.fileId[1]
+  //     .toString(16)
+  //     .padStart(2, '0')}${(0x00).toString(16).padStart(2, '0')}`;
+
+  //   const fileHeader = tag + this.hexToBigEndian(this.fileSize.toString(16));
+
+  //   let fileData;
+  //   if (this.processedData === 0) {
+  //     fileData = '00'.repeat(this.fileSize);
+  //   } else {
+  //     fileData = this.processedData
+  //       .map(byte => byte.toString(16).padStart(2, '0'))
+  //       .join('');
+  //   }
+
+  //   let formattedForDDD = fileHeader + fileData;
+
+  //   if (this.signature) {
+  //     const endTag = `${this.fileId[0]
+  //       .toString(16)
+  //       .padStart(2, '0')}${this.fileId[1]
+  //       .toString(16)
+  //       .padStart(2, '0')}${(0x01).toString(16).padStart(2, '0')}`;
+  //     formattedForDDD += endTag;
+
+  //     const signatureHex = this.signature
+  //       .map(byte => byte.toString(16).padStart(2, '0'))
+  //       .join('');
+  //     formattedForDDD += signatureHex;
+  //   }
+
+  //   return formattedForDDD;
+  // }
+  // Add this method inside the CardFile class
+  hexToBytes(hex) {
+    const bytes = new Uint8Array(hex.length / 2);
+    for (let i = 0; i < hex.length; i += 2) {
+      bytes[i / 2] = parseInt(hex.substr(i, 2), 16);
+    }
+    return bytes;
+  }
+
+  getSignature() {
+    const signature = `${this.fileId[0]
+      .toString(16)
+      .padStart(2, '0')
+      .toUpperCase()}${this.fileId[1]
+      .toString(16)
+      .padStart(2, '0')
+      .toUpperCase()}${(0x01).toString(16).padStart(2, '0').toUpperCase()}`;
+
+    // Creating signature size: equivalent to struct.pack(">h", 128) in Python
+    const signatureSize = (128).toString(16).padStart(4, '0').toUpperCase();
+
+    const combinedSignature =
+      signature +
+      signatureSize +
+      this.signature // this.signature is now fileSignature
+        .map(byte => byte.toString(16).padStart(2, '0').toUpperCase())
+        .join('');
+
+    return combinedSignature;
+  }
+
+  convertToDdd() {
+    const tag = `${this.fileId[0]
+      .toString(16)
+      .padStart(2, '0')
+      .toUpperCase()}${this.fileId[1]
+      .toString(16)
+      .padStart(2, '0')
+      .toUpperCase()}${(0x00).toString(16).padStart(2, '0').toUpperCase()}`;
+
+    const fileHeader = tag + this.hexToBigEndian(this.fileSize.toString(16));
+
+    let fileData;
+    if (!this.processedData || this.processedData.length === 0) {
+      fileData = '00'.repeat(this.fileSize);
+    } else {
+      fileData = this.processedData
+        .map(byte => byte.toString(16).padStart(2, '0').toUpperCase())
+        .join('');
+    }
+
+    let formattedForDDD = fileHeader + fileData;
+
+    if (this.needsSignature) {
+      formattedForDDD += this.getSignature();
+    }
+
+    return formattedForDDD.toLowerCase();
+  }
+}
+
+export default class DynamicCardFile extends CardFile {
+  readingSpeed: number;
+
+  constructor(
+    name: string,
+    fileId: number[],
+    fileSize: number,
+    dataFields: DataFields,
+    needsSignature: boolean = false,
+    sendCommand: (command: number[]) => Promise<number[]>,
+    readingSpeed: number,
+  ) {
+    super(name, fileId, fileSize, dataFields, needsSignature, sendCommand);
+    this.readingSpeed = readingSpeed;
+  }
+
+  convertToDdd() {
+    let fileData;
+    if (!this.processedData || this) {
+      fileData = '00'.repeat(this.fileSize);
+    } else {
+      fileData = this.processedData
+        .map(byte => byte.toString(16).padStart(2, '0').toUpperCase())
+        .join('');
+
+      if (self.fileSize > this.processedData.length) {
+        fileData += '00'.repeat(self.fileSize - fileData.length);
+      }
+    }
+
+    const tag = `${this.fileId[0]
+      .toString(16)
+      .padStart(2, '0')
+      .toUpperCase()}${this.fileId[1]
+      .toString(16)
+      .padStart(2, '0')
+      .toUpperCase()}${(0x00).toString(16).padStart(2, '0').toUpperCase()}`;
+
+    const fileHeader = tag + this.hexToBigEndian(this.fileSize.toString(16));
+
+    let formattedForDDD = fileHeader + fileData;
+
+    if (this.needsSignature) {
+      formattedForDDD += this.getSignature();
+    }
+
+    return formattedForDDD.toLowerCase();
+  }
+
+  async readData() {
+    const readData: number[] = [];
+    try {
+      await this.sendCommand(this.selectCommand);
+
+      if (this.needsSignature) {
+        await this.sendCommand(this.getHashDataCommand());
+        this.signature = await this.sendCommand(
+          this.getDigitalSignatureCommand(),
+        );
+      }
+
+      let offset = 0;
+
+      while (readData.length != this.fileSize) {
+        const readCommand = [
+          ...this.commandData.read_binary_prefix,
+          offset >> 8,
+          offset & 0xff,
+          this.readingSpeed,
+        ];
+
+        const responseData = await this.sendCommand(readCommand);
+
+        if (!responseData.length) {
+          console.log('Ending:', responseData);
+          break;
+        }
+
+        readData.push(...responseData);
+        offset += responseData.length;
+      }
+
+      this.processedData = readData;
+      // this.decodedData = this.decodeData();
+      this.dddFormat = this.convertToDdd();
+      this.wasReadSuccessfully = true;
+    } catch (error) {
+      if (readData.length > 0) {
+        this.processedData = readData;
+        // this.decodedData = this.decodeData();
+        this.wasReadSuccessfully = true;
+      } else {
+        // this.decodedData = null;
+        console.error(error);
+        this.wasReadSuccessfully = false;
+      }
+    }
+  }
 }

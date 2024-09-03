@@ -3,17 +3,16 @@ import {Button, Heading, NoContent} from '@/components';
 import LoadingScreen from '@/screens/LoadingScreen';
 import {styled} from 'nativewind';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {ScrollView, View, Alert, Platform, RefreshControl} from 'react-native';
+import {Alert, Platform, RefreshControl, FlatList} from 'react-native';
 import RNFS from 'react-native-fs';
 import useFiles from '@/hooks/useFiles';
 import {useTranslation} from 'react-i18next';
 
-const StyledView = styled(View);
+const StyledFlatList = styled(FlatList);
 const StyledSafeAreaView = styled(SafeAreaView);
-const StyledScrollView = styled(ScrollView);
 
 const FilesScreen = () => {
-  const {files, loading, error, fetchFilesRefresh} = useFiles();
+  const {files, loading, fetchFilesRefresh, fetchNextPage} = useFiles();
   const [refreshing, setRefreshing] = useState(false);
   const {t} = useTranslation();
 
@@ -53,27 +52,29 @@ const FilesScreen = () => {
 
   return (
     <StyledSafeAreaView className="flex-1 bg-darkPurple pt-6">
-      <StyledScrollView
-        contentContainerStyle={{flexGrow: 1}}
+      <Heading title={t('Pliki')} classes="mb-6" />
+
+      {files.length === 0 && <NoContent text={t('plików')} />}
+
+      <StyledFlatList
+        className="px-4"
+        data={files}
+        showsVerticalScrollIndicator={false}
+        renderItem={({item}) => (
+          <Button
+            key={item.id}
+            text={item.name}
+            onPress={() => handlePress(item.dddfile, item.name)}
+            className="rounded-lg bg-lightPurple p-2 mb-2"
+          />
+        )}
+        keyExtractor={item => item.id}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
-        <Heading title={t('Pliki')} classes="mb-6" />
-        <StyledView className="flex-1 px-4">
-          {files.length === 0 || error ? (
-            <NoContent elementName="plików" />
-          ) : (
-            files.map((file, idx) => (
-              <Button
-                key={idx}
-                text={file.name}
-                onPress={() => handlePress(file.dddfile, file.name)}
-                className="rounded-lg bg-lightPurple p-2 mb-2"
-              />
-            ))
-          )}
-        </StyledView>
-      </StyledScrollView>
+        }
+        onEndReached={fetchNextPage}
+        onEndReachedThreshold={2}
+      />
     </StyledSafeAreaView>
   );
 };

@@ -7,48 +7,71 @@ import {
   CardDownload,
   Identification,
   DrivingLicenceInfo,
+  EventsData,
+  CurrentUsage,
+  ControlActivityData,
 } from '@/DriverCardFiles/files/DriverCardFiles';
-import useApduCommand from './useApduCommand';
-import {useMemo} from 'react';
-import {NativeModules} from 'react-native';
+import useReaderIOS from '@/hooks/useReaderIOS';
+import axiosInstance from '@/utils/axiosConfig';
 
 const useCardReader = () => {
-  const apdu = useApduCommand();
-  const {CardReader} = NativeModules;
+  const {sendCommand} = useReaderIOS();
+  let dddString = '';
 
-  const headerFiles = useMemo(() => [new Ic(), new Icc()], []);
-  const tachographFiles = useMemo(
-    () => [
-      new ApplicationIdentification(),
-      new CardCertificate(),
-      new CaCertificate(),
-      new CardDownload(),
-      new Identification(),
-      new DrivingLicenceInfo(),
-    ],
-    [],
-  );
-  const files = [...headerFiles, ...tachographFiles];
+  const headerFiles = [new Icc(sendCommand), new Ic(sendCommand)];
 
-  const readData = () => {
-    for (let file of headerFiles) {
-      file.readData();
-    }
+  const tachographFiles = [
+    // new ApplicationIdentification(sendCommand),
+    // new CardCertificate(sendCommand),
+    // new CaCertificate(sendCommand),
+    // new Identification(sendCommand),
+    // new CardDownload(sendCommand),
+    // new DrivingLicenceInfo(sendCommand),
+    // new CurrentUsage(sendCommand),
+    // new ControlActivityData(sendCommand),
+    new EventsData(sendCommand),
+  ];
 
-    CardReader.sendAPDUCommand(apdu.selectTachoAppCommand());
-
-    for (let file of tachographFiles) {
-      file.readData();
+  const selectTachoApp = async () => {
+    try {
+      await sendCommand([
+        0x00, 0xa4, 0x04, 0x0c, 0x06, 0xff, 0x54, 0x41, 0x43, 0x48, 0x4f,
+      ]);
+    } catch (err) {
+      throw new Error(err);
     }
   };
 
-  const convertToDddFormat = () => {};
+  const readData = async () => {
+    // for (let file of headerFiles) {
+    //   await file.readData(sendCommand);
+    //   dddString += file.dddFormat;
+    // }
 
-  const sendDataToServer = () => {};
+    await selectTachoApp();
+
+    for (let file of tachographFiles) {
+      await file.readData();
+      dddString += file.dddFormat;
+    }
+  };
+
+  const sendDataToServer = async () => {
+    try {
+      const response = await axiosInstance.post('/ddd/mobile/', {
+        file: dddString,
+      });
+      console.log(response.data);
+    } catch (err) {
+      console.log(err.message);
+      throw new Error(err);
+    }
+  };
 
   return {
     readData,
-    convertToDddFormat,
     sendDataToServer,
   };
 };
+
+export default useCardReader;

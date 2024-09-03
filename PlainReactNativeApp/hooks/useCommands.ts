@@ -71,46 +71,46 @@ const useCommands = () => {
           id: [0x05, 0x21],
           size: 0x35,
         },
-        //   events_data: {
-        //     type: 'DYNAMIC',
-        //     id: [0x05, 0x02],
-        //     size: undefined,
-        //   },
-        //   faults_data: {
-        //     type: 'DYNAMIC',
-        //     id: [0x05, 0x03],
-        //     size: undefined,
-        //   },
-        //   driver_activity_data: {
-        //     type: 'DYNAMIC',
-        //     id: [0x05, 0x04],
-        //     size: undefined,
-        //   },
-        //   vehicles_used: {
-        //     type: 'DYNAMIC',
-        //     id: [0x05, 0x05],
-        //     size: undefined,
-        //   },
-        //   places: {
-        //     type: 'DYNAMIC',
-        //     id: [0x05, 0x06],
-        //     size: undefined,
-        //   },
-        //   specific_conditions: {
-        //     type: 'DYNAMIC',
-        //     id: [0x05, 0x22],
-        //     size: undefined,
-        //   },
-        //   control_activity_data: {
-        //     type: 'STATIC',
-        //     id: [0x05, 0x08],
-        //     size: 0x2e,
-        //   },
-        //   current_usage: {
-        //     type: 'STATIC',
-        //     id: [0x05, 0x07],
-        //     size: 0x13,
-        //   },
+        events_data: {
+          type: 'DYNAMIC',
+          id: [0x05, 0x02],
+          size: 0x6c0,
+        },
+        faults_data: {
+          type: 'DYNAMIC',
+          id: [0x05, 0x03],
+          size: 0x480,
+        },
+        driver_activity_data: {
+          type: 'DYNAMIC',
+          id: [0x05, 0x04],
+          size: undefined,
+        },
+        vehicles_used: {
+          type: 'DYNAMIC',
+          id: [0x05, 0x05],
+          size: undefined,
+        },
+        places: {
+          type: 'DYNAMIC',
+          id: [0x05, 0x06],
+          size: undefined,
+        },
+        specific_conditions: {
+          type: 'DYNAMIC',
+          id: [0x05, 0x22],
+          size: undefined,
+        },
+        control_activity_data: {
+          type: 'STATIC',
+          id: [0x05, 0x08],
+          size: 0x2e,
+        },
+        current_usage: {
+          type: 'STATIC',
+          id: [0x05, 0x07],
+          size: 0x13,
+        },
       },
     }),
     [],
