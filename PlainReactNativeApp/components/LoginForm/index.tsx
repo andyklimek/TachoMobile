@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   TextInput,
   Text,
   KeyboardAvoidingView,
   Platform,
+  NativeModules,
 } from 'react-native';
 import {Controller} from 'react-hook-form';
 import {styled} from 'nativewind';
@@ -30,15 +31,22 @@ const LoginForm = () => {
   const {t} = useTranslation();
 
   const onSubmit = async (data: any) => {
-    setLoading(true);
+    const {CardReader} = NativeModules;
     try {
-      await login(data.username, data.password);
-      navigation.navigate('dashboard');
-    } catch (err) {
-      setError(true);
-    } finally {
-      setLoading(false);
+      console.log(await CardReader.connectToUsbReader());
+    } catch (e) {
+      console.log(e);
     }
+
+    // setLoading(true);
+    // try {
+    //   await login(data.username, data.password);
+    //   navigation.navigate('dashboard');
+    // } catch (err) {
+    //   setError(true);
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   return (
