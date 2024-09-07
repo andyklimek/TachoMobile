@@ -5,7 +5,6 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {Heading} from '@/components';
 import {useTranslation} from 'react-i18next';
 import {ScanEye, MailCheck, CircleX} from 'lucide-react-native';
-import useReaderIOS from '@/hooks/useReaderIOS';
 import useCardReader from '@/hooks/useCardReader';
 
 const StyledTouchableOpacity = styled(TouchableOpacity);
@@ -18,10 +17,8 @@ const CardReaderScreen = () => {
   const {t} = useTranslation();
   const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
-
   const [error, setError] = useState('');
-  const {connectAndRead, connectReader} = useReaderIOS();
-  const {readCardData, sendDataToServer} = useCardReader();
+  const {readCardData, sendDataToServer, connectReader} = useCardReader();
 
   useEffect(() => {
     setTimeout(() => {
@@ -68,6 +65,7 @@ const CardReaderScreen = () => {
         <StyledText className="text-slate-200">
           {`${t('Ostatni odczyt')}:`}
         </StyledText>
+        {/* TODO Last update implementation */}
         <StyledText className="text-slate-200 font-semibold">
           22.08.2024 12:53
         </StyledText>
@@ -83,10 +81,12 @@ const CardReaderScreen = () => {
             {!loading && !success && !error && t('Kliknij, aby odczytać')}
             {!loading && success && !error && t('Plik wysłany')}
             {!loading && !success && error && t('Błąd')}
+            {/* TODO Improve error handling */}
           </StyledText>
         </StyledView>
       </StyledTouchableOpacity>
     </StyledSafeAreaView>
+    // TODO Preview of newly created file
   );
 };
 

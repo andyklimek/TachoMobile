@@ -1,3 +1,4 @@
+import {useState} from 'react';
 import {
   Ic,
   Icc,
@@ -19,11 +20,22 @@ import {
 import axiosInstance from '@/utils/axiosConfig';
 
 const useCardReader = () => {
-  let dddString = '';
+  const [connection, setConnection] = useState('');
+
+  const connectReader = async () => {
+    try {
+      const deviceList = await CardReader.getDeviceListPromise();
+      const readerResp = await CardReader.connectReader(deviceList[0]);
+      setConnection(readerResp);
+    } catch (error) {
+      throw Error(error);
+    }
+  };
 
   const sendCommand = async (command: number[]): Promise<number[]> => {
     try {
       const resp = await CardReader.sendAPDUCommand(command);
+      // TODO Error handling
       // console.log(resp.slice(resp.length - 2));
       // if (resp[resp.length - 2] != 144 && resp[resp.length - 1] != 0) {
       //   console.log(command);
@@ -35,6 +47,8 @@ const useCardReader = () => {
       throw Error(error);
     }
   };
+
+  let dddString = '';
 
   const headerFiles = [new Icc(sendCommand), new Ic(sendCommand)];
 
@@ -94,6 +108,8 @@ const useCardReader = () => {
   };
 
   return {
+    connectReader,
+    connection,
     readCardData,
     sendDataToServer,
   };
