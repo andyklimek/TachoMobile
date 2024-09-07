@@ -8,28 +8,51 @@ import {
   Identification,
   DrivingLicenceInfo,
   EventsData,
+  FaultsData,
+  DriverActivityData,
+  VehiclesUsed,
+  Places,
+  SpecificConditions,
   CurrentUsage,
   ControlActivityData,
 } from '@/DriverCardFiles/files/DriverCardFiles';
-import useReaderIOS from '@/hooks/useReaderIOS';
 import axiosInstance from '@/utils/axiosConfig';
 
 const useCardReader = () => {
-  const {sendCommand} = useReaderIOS();
   let dddString = '';
+
+  const sendCommand = async (command: number[]): Promise<number[]> => {
+    try {
+      const resp = await CardReader.sendAPDUCommand(command);
+      // console.log(resp.slice(resp.length - 2));
+      // if (resp[resp.length - 2] != 144 && resp[resp.length - 1] != 0) {
+      //   console.log(command);
+      //   throw Error('Invalid response');
+      // }
+      // console.log(resp, resp.slice(resp.length - 2));
+      return resp.slice(0, -2);
+    } catch (error) {
+      throw Error(error);
+    }
+  };
 
   const headerFiles = [new Icc(sendCommand), new Ic(sendCommand)];
 
   const tachographFiles = [
-    // new ApplicationIdentification(sendCommand),
-    // new CardCertificate(sendCommand),
-    // new CaCertificate(sendCommand),
-    // new Identification(sendCommand),
-    // new CardDownload(sendCommand),
-    // new DrivingLicenceInfo(sendCommand),
-    // new CurrentUsage(sendCommand),
-    // new ControlActivityData(sendCommand),
-    new EventsData(sendCommand),
+    new ApplicationIdentification(sendCommand),
+    new CardCertificate(sendCommand),
+    new CaCertificate(sendCommand),
+    new Identification(sendCommand),
+    new CardDownload(sendCommand),
+    new DrivingLicenceInfo(sendCommand),
+    new CurrentUsage(sendCommand),
+    new ControlActivityData(sendCommand),
+    // new EventsData(sendCommand),
+    // new FaultsData(sendCommand),
+    // new DriverActivityData(sendCommand),
+    // new VehiclesUsed(sendCommand),
+    // new Places(sendCommand),
+    // new SpecificConditions(sendCommand),
   ];
 
   const selectTachoApp = async () => {
@@ -42,26 +65,28 @@ const useCardReader = () => {
     }
   };
 
-  const readData = async () => {
-    // for (let file of headerFiles) {
-    //   await file.readData(sendCommand);
-    //   dddString += file.dddFormat;
-    // }
+  const readCardData = async () => {
+    for (let file of headerFiles) {
+      await file.readData();
+      console.log(file.decodedData);
+      dddString += file.dddFormat;
+    }
 
     await selectTachoApp();
 
     for (let file of tachographFiles) {
       await file.readData();
+      console.log(file.decodedData);
       dddString += file.dddFormat;
     }
   };
 
   const sendDataToServer = async () => {
     try {
-      const response = await axiosInstance.post('/ddd/mobile/', {
-        file: dddString,
-      });
-      console.log(response.data);
+      // const response = await axiosInstance.post('/ddd/mobile/', {
+      //   file: dddString,
+      // });
+      // console.log(response.data);
     } catch (err) {
       console.log(err.message);
       throw new Error(err);
@@ -69,7 +94,7 @@ const useCardReader = () => {
   };
 
   return {
-    readData,
+    readCardData,
     sendDataToServer,
   };
 };

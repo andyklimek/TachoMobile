@@ -21,7 +21,7 @@ const CardReaderScreen = () => {
 
   const [error, setError] = useState('');
   const {connectAndRead, connectReader} = useReaderIOS();
-  const {readData, sendDataToServer} = useCardReader();
+  const {readCardData, sendDataToServer} = useCardReader();
 
   useEffect(() => {
     setTimeout(() => {
@@ -33,7 +33,7 @@ const CardReaderScreen = () => {
     setLoading(true);
     try {
       await connectReader();
-      await readData();
+      await readCardData();
       await sendDataToServer();
       setSuccess(true);
     } catch (err) {

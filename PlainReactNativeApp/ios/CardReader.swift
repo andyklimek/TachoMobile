@@ -58,9 +58,9 @@ class CardReader: NSObject {
         print("Scanning for devices...")
         
         let connectedAccessories = accessoryManager.connectedAccessories
+        print(connectedAccessories)
         for accessory in connectedAccessories {
             for protocolString in accessory.protocolStrings {
-                print(protocolString)
                 if supportedProtocols.contains(protocolString) {
                     print("Found supported device: \(accessory.name)")
                     self.deviceList.append(accessory.name)
@@ -195,8 +195,6 @@ class CardReader: NSObject {
             return
         }
       
-    
-        print("Swift select command: ", apduCommand)
 
 
         var pioSendPci: SCARD_IO_REQUEST = SCARD_IO_REQUEST(dwProtocol: DWORD(SCARD_PROTOCOL_T0), cbPciLength: 0)

@@ -10,10 +10,17 @@ const useFiles = () => {
   const fetchFiles = async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get('/ddd/user/');
-      const data = response.data.results;
+      let data = [];
 
+      const response = await axiosInstance.get('/ddd/user/');
+      data = [...response.data.results];
       setNextPage(response.data.next);
+
+      if (response.data.next) {
+        const nextResponse = await axiosInstance.get(response.data.next);
+        data = [...data, ...nextResponse.data.results];
+        setNextPage(nextResponse.data.next);
+      }
 
       data.forEach(file => {
         const dddfile = file.dddfile;
@@ -43,10 +50,17 @@ const useFiles = () => {
 
   const fetchFilesRefresh = async () => {
     try {
+      let data = [];
       const response = await axiosInstance.get('/ddd/user/');
-      const data = response.data.results;
 
+      data = [...response.data.results];
       setNextPage(response.data.next);
+
+      if (response.data.next) {
+        const nextResponse = await axiosInstance.get(response.data.next);
+        data = [...data, ...nextResponse.data.results];
+        setNextPage(nextResponse.data.next);
+      }
 
       data.forEach(file => {
         const dddfile = file.dddfile;
@@ -72,30 +86,32 @@ const useFiles = () => {
 
   const fetchNextPage = async () => {
     try {
-      if (nextPage) {
-        const response = await axiosInstance.get(nextPage);
-        const data = response.data.results;
-
-        setNextPage(response.data.next);
-
-        data.forEach(file => {
-          const dddfile = file.dddfile;
-          const lastSlashIndex = dddfile.lastIndexOf('/');
-          const lastDotIndex = dddfile.lastIndexOf('.');
-
-          if (
-            lastSlashIndex !== -1 &&
-            lastDotIndex !== -1 &&
-            lastDotIndex > lastSlashIndex
-          ) {
-            file.name = dddfile.slice(lastSlashIndex + 1, lastDotIndex);
-          } else {
-            file.name = '';
-          }
-        });
-
-        setFiles([...files, ...data]);
+      if (!nextPage) {
+        return;
       }
+
+      const response = await axiosInstance.get(nextPage);
+      const data = response.data.results;
+
+      setNextPage(response.data.next);
+
+      data.forEach(file => {
+        const dddfile = file.dddfile;
+        const lastSlashIndex = dddfile.lastIndexOf('/');
+        const lastDotIndex = dddfile.lastIndexOf('.');
+
+        if (
+          lastSlashIndex !== -1 &&
+          lastDotIndex !== -1 &&
+          lastDotIndex > lastSlashIndex
+        ) {
+          file.name = dddfile.slice(lastSlashIndex + 1, lastDotIndex);
+        } else {
+          file.name = '';
+        }
+      });
+
+      setFiles([...files, ...data]);
     } catch (err) {
       setError(err.message || 'An error occurred while fetching files');
     }

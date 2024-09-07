@@ -15,7 +15,8 @@ const StyledSafeAreaView = styled(SafeAreaView);
 const ReportsScreen = () => {
   const navigation = useNavigation();
   const {t} = useTranslation();
-  const {reports, loading, error, fetchReportsRefresh} = useReports();
+  const {reports, loading, error, fetchReportsRefresh, fetchNextPage} =
+    useReports();
   const [refreshing, setRefreshing] = useState(false);
 
   const handlePress = (id, date, idx) => {
@@ -43,9 +44,9 @@ const ReportsScreen = () => {
         contentContainerStyle={{flexGrow: 1}}
         data={reports}
         showsVerticalScrollIndicator={false}
-        renderItem={({item}) => (
+        renderItem={({item, idx}) => (
           <Button
-            key={item.id}
+            key={idx}
             text={`${moment(item.created_at).format('DD/MM/YYYY')}/${item.id}`}
             onPress={() => handlePress(item.id, item.created_at, item.id)}
             className="rounded-lg bg-lightPurple p-2 mb-2"
@@ -55,6 +56,8 @@ const ReportsScreen = () => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
+        onEndReached={fetchNextPage}
+        onEndReachedThreshold={2}
       />
     </StyledSafeAreaView>
   );

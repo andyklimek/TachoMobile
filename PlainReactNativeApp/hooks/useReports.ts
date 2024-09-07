@@ -5,13 +5,22 @@ const useReports = () => {
   const [reports, setReports] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [nextPage, setNextPage] = useState<string | null>(null);
 
   const fetchReports = async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get('/report/all/');
+      let data = [];
 
-      const data = response.data.results;
+      const response = await axiosInstance.get('/report/all/');
+      data = [...response.data.results];
+      setNextPage(response.data.next);
+
+      if (response.data.next) {
+        const nextResponse = await axiosInstance.get(response.data.next);
+        data = [...data, ...nextResponse.data.results];
+        setNextPage(nextResponse.data.next);
+      }
 
       setReports(data);
     } catch (err) {
@@ -33,11 +42,27 @@ const useReports = () => {
     }
   };
 
+  const fetchNextPage = async () => {
+    try {
+      if (!nextPage) {
+        return;
+      }
+
+      const response = await axiosInstance.get(nextPage);
+      const data = response.data.results;
+
+      setNextPage(response.data.next);
+      setReports([...reports, ...data]);
+    } catch (err) {
+      setError(err.message || 'An error occurred while fetching the next page');
+    }
+  };
+
   useEffect(() => {
     fetchReports();
   }, []);
 
-  return {reports, loading, error, fetchReportsRefresh};
+  return {reports, loading, error, fetchReportsRefresh, fetchNextPage};
 };
 
 export default useReports;

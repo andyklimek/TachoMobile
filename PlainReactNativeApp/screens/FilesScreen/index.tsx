@@ -60,9 +60,9 @@ const FilesScreen = () => {
         className="px-4"
         data={files}
         showsVerticalScrollIndicator={false}
-        renderItem={({item}) => (
+        renderItem={({item, idx}) => (
           <Button
-            key={item.id}
+            key={idx}
             text={item.name}
             onPress={() => handlePress(item.dddfile, item.name)}
             className="rounded-lg bg-lightPurple p-2 mb-2"

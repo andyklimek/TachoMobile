@@ -1,5 +1,4 @@
-import CardFile from '../base/CardFile';
-import DynamicCardFile from '../base/CardFile';
+import {CardFile, DynamicCardFile} from '../base/CardFile';
 
 export class Ic extends CardFile {
   constructor(sendCommand: (command: number[]) => Promise<number[]>) {
@@ -72,7 +71,7 @@ export class ApplicationIdentification extends CardFile {
         type_of_tachograph_card_id: {
           position: [0, 1],
           decoder: 'decodeOctetString',
-          // mapper: getTachographCardType,
+          mapper: 'getTachographCardType',
         },
         card_structure_version: {
           position: [1, 3],
@@ -221,6 +220,7 @@ export class DrivingLicenceInfo extends CardFile {
         driving_licence_issuing_nation: {
           position: [36, 37],
           decoder: 'decodeOctetString',
+          mapper: 'getNation',
         },
         driving_licence_number: {
           position: [37, 53],
@@ -244,6 +244,7 @@ export class CurrentUsage extends CardFile {
         vehicle_registration_nation: {
           position: [4, 5],
           decoder: 'decodeOctetString',
+          mapper: 'getNation',
         },
         vehicle_registration_number: {
           position: [5, 19],
@@ -263,12 +264,21 @@ export class ControlActivityData extends CardFile {
       [0x05, 0x08],
       0x2e,
       {
-        control_type: {position: [0, 1], decoder: 'decodeOctetString'},
+        control_type: {
+          position: [0, 1],
+          decoder: 'decodeOctetString',
+          mapper: 'getControlType',
+        },
         control_time: {position: [1, 5], decoder: 'decodeToDate'},
-        card_type: {position: [5, 6], decoder: 'decodeOctetString'},
+        card_type: {
+          position: [5, 6],
+          decoder: 'decodeOctetString',
+          mapper: 'getTachographCardType',
+        },
         card_issuing_member_state: {
           position: [6, 7],
           decoder: 'decodeOctetString',
+          mapper: 'getNation',
         },
         card_number: {position: [7, 23], decoder: 'decodeToAscii'},
         vechicle_registration_nation: {
@@ -301,18 +311,171 @@ export class EventsData extends DynamicCardFile {
       [0x05, 0x02],
       0x6c0,
       {
+        // TODO - Fields are not correct
         event_type: {position: [0, 1], decoder: 'decodeToInt'},
-        event_begin_time: {position: [1, 5], decoder: 'decodeToDateTime'},
-        event_end_time: {position: [5, 9], decoder: 'decodeToDateTime'},
-        event_vehicle_registration: {
-          position: [9, 14],
+        begin_time: {position: [1, 5], decoder: 'decodeToDateTime'},
+        end_time: {position: [5, 9], decoder: 'decodeToDateTime'},
+        vehicle_registration_nation: {
+          position: [9, 10],
+          decoder: 'decodeOctetString',
+        },
+        vehicle_registration_number: {
+          position: [10, 24],
           decoder: 'decodeToAscii',
         },
-        event_data: {position: [14, 15], decoder: 'decodeToInt'},
+        // event_data: {position: [14, 15], decoder: 'decodeToInt'},
       },
       true,
       sendCommand,
       0x40,
+    );
+  }
+}
+
+export class FaultsData extends DynamicCardFile {
+  constructor(sendCommand: (command: number[]) => Promise<number[]>) {
+    super(
+      'faults_data',
+      [0x05, 0x03],
+      0x480,
+      {
+        // TODO - Fields are not correct
+        fault_type: {position: [0, 1], decoder: 'decodeToInt'},
+        begin_time: {position: [1, 5], decoder: 'decodeToDateTime'},
+        end_time: {position: [5, 9], decoder: 'decodeToDateTime'},
+        vehicle_registration_nation: {
+          position: [9, 10],
+          decoder: 'decodeOctetString',
+        },
+        vehicle_registration_number: {
+          position: [10, 24],
+          decoder: 'decodeToAscii',
+        },
+        // fault_data: {position: [14, 15], decoder: 'decodeToInt'},
+      },
+      true,
+      sendCommand,
+      0x40,
+    );
+  }
+}
+
+export class DriverActivityData extends DynamicCardFile {
+  constructor(sendCommand: (command: number[]) => Promise<number[]>) {
+    super(
+      'driver_activity_data',
+      [0x05, 0x04],
+      0x35d4,
+      {
+        // TODO - Fields are not correct
+        activity_type: {position: [0, 1], decoder: 'decodeToInt'},
+        begin_time: {position: [1, 5], decoder: 'decodeToDateTime'},
+        end_time: {position: [5, 9], decoder: 'decodeToDateTime'},
+        vehicle_registration_nation: {
+          position: [9, 10],
+          decoder: 'decodeOctetString',
+        },
+        vehicle_registration_number: {
+          position: [10, 24],
+          decoder: 'decodeToAscii',
+        },
+        // activity_data: {position: [14, 15], decoder: 'decodeToInt'},
+      },
+      true,
+      sendCommand,
+      0x41,
+    );
+  }
+}
+
+export class VehiclesUsed extends DynamicCardFile {
+  constructor(sendCommand: (command: number[]) => Promise<number[]>) {
+    super(
+      'vehicles_used',
+      [0x05, 0x05],
+      0x183a,
+      {
+        // TODO - Fields are not correct
+        vehicle_registration_nation: {
+          position: [0, 1],
+          decoder: 'decodeOctetString',
+        },
+        vehicle_registration_number: {
+          position: [1, 15],
+          decoder: 'decodeToAscii',
+        },
+        vehicle_last_entry_time: {
+          position: [15, 19],
+          decoder: 'decodeToDateTime',
+        },
+        vehicle_first_exit_time: {
+          position: [19, 23],
+          decoder: 'decodeToDateTime',
+        },
+      },
+      true,
+      sendCommand,
+      0xe,
+    );
+  }
+}
+
+export class Places extends DynamicCardFile {
+  constructor(sendCommand: (command: number[]) => Promise<number[]>) {
+    super(
+      'places',
+      [0x05, 0x06],
+      0x461,
+      {
+        // TODO - Fields are not correct
+        place_registration_nation: {
+          position: [0, 1],
+          decoder: 'decodeOctetString',
+        },
+        place_registration_number: {
+          position: [1, 15],
+          decoder: 'decodeToAscii',
+        },
+        place_last_entry_time: {
+          position: [15, 19],
+          decoder: 'decodeToDateTime',
+        },
+        place_first_exit_time: {
+          position: [19, 23],
+          decoder: 'decodeToDateTime',
+        },
+      },
+      true,
+      sendCommand,
+      0x3b,
+    );
+  }
+}
+
+export class SpecificConditions extends DynamicCardFile {
+  constructor(sendCommand: (command: number[]) => Promise<number[]>) {
+    super(
+      'specific_conditions',
+      [0x05, 0x22],
+      0x118,
+      {
+        // TODO - Fields are not correct
+        specific_condition_type: {
+          position: [0, 1],
+          decoder: 'decodeOctetString',
+        },
+        specific_condition_start_time: {
+          position: [1, 5],
+          decoder: 'decodeToDateTime',
+        },
+        specific_condition_end_time: {
+          position: [5, 9],
+          decoder: 'decodeToDateTime',
+        },
+      },
+      true,
+      sendCommand,
+      0x1c,
     );
   }
 }

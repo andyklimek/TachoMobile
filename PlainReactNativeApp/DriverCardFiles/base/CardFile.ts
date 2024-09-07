@@ -1,3 +1,5 @@
+import {DataMapper} from '../utils/DataMapper';
+
 type BytePositionSlice = [number, number];
 type decoderFunction = (data: number[]) => any;
 // type mapperFunction = (data: string) => any;
@@ -12,21 +14,39 @@ interface DataFields {
   [key: string]: DataField;
 }
 
-export default class CardFile {
+export class CardFile {
   name: string;
   fileId: number[];
   fileSize: number;
-
   dataFields: DataFields;
-
   needsSignature: boolean;
   signature: number[];
   dddFormat: string;
   selectCommand: number[];
   readCommand: number[];
-
+  sendCommand: (command: number[]) => Promise<number[]>;
   processedData?: number[];
   decodedData?: {[key: string]: any};
+  dataMapperObject: DataMapper;
+  dataMapper: {
+    getTachographCardType: (type: string) => string;
+    getNation: (nationCode: string) => string;
+    getEventFaultType: (type: string) => string;
+    getSlotValue: (slotCode: string) => string;
+    getDrivingStatus: (status: string) => string;
+    getCardStatus: (status: string) => string;
+    getActivity: (activityCode: string) => string;
+    getRegion: (regionCode: string) => string;
+    getSpecialCondition: (condition: string) => string;
+    getTypeWorkPeriod: (period: string) => string;
+    getControlType: (binaryRepr: string) => Record<string, string>;
+  };
+  decodersMapper: {
+    decodeOctetString: (encodedData: number[]) => string;
+    decodeToAscii: (encodedData: number[]) => string;
+    decodeToInt: (encodedData: number[]) => number;
+    decodeToDate: (encodedData: number[], onlyDate?: boolean) => string;
+  };
 
   constructor(
     name: string,
@@ -42,7 +62,7 @@ export default class CardFile {
     this.dataFields = dataFields;
     this.sendCommand = sendCommand;
     this.needsSignature = needsSignature;
-
+    this.signature = [];
     this.commandData = {
       select_tacho_app: [
         0x00, 0xa4, 0x04, 0x0c, 0x06, 0xff, 0x54, 0x41, 0x43, 0x48, 0x4f,
@@ -53,7 +73,6 @@ export default class CardFile {
       read_binary_prefix: [0x00, 0xb0],
       default_offset: [0x00, 0x00],
     };
-
     this.statusData = {
       success_command: [144, 0],
     };
@@ -64,6 +83,21 @@ export default class CardFile {
       this.fileSize,
     );
 
+    this.dataMapperObject = new DataMapper();
+    this.dataMapper = {
+      getTachographCardType: this.dataMapperObject.getTachographCardType,
+      getNation: this.dataMapperObject.getNation,
+      getEventFaultType: this.dataMapperObject.getEventFaultType,
+      getSlotValue: this.dataMapperObject.getSlotValue,
+      getDrivingStatus: this.dataMapperObject.getDrivingStatus,
+      getCardStatus: this.dataMapperObject.getCardStatus,
+      getActivity: this.dataMapperObject.getActivity,
+      getRegion: this.dataMapperObject.getRegion,
+      getSpecialCondition: this.dataMapperObject.getSpecialCondition,
+      getTypeWorkPeriod: this.dataMapperObject.getTypeWorkPeriod,
+      getControlType: this.dataMapperObject.getControlType,
+    };
+
     this.decodersMapper = {
       decodeOctetString: this.decodeOctetString,
       decodeToAscii: this.decodeToAscii,
@@ -73,18 +107,28 @@ export default class CardFile {
   }
 
   async readData() {
-    await this.sendCommand(this.selectCommand);
-
-    if (this.needsSignature) {
-      await this.sendCommand(this.getHashDataCommand());
-      this.signature = await this.sendCommand(
-        this.getDigitalSignatureCommand(),
-      );
+    try {
+      await this.sendCommand(this.selectCommand);
+    } catch (error) {
+      console.error('Error in selectCommand:', error);
     }
-
-    this.processedData = await this.sendCommand(this.readCommand);
-    this.decodedData = this.decodeData();
-    this.dddFormat = this.convertToDdd();
+    if (this.needsSignature) {
+      try {
+        await this.sendCommand(this.getHashDataCommand());
+        this.signature = await this.sendCommand(
+          this.getDigitalSignatureCommand(),
+        );
+      } catch (error) {
+        console.error('Error in signature commands:', error);
+      }
+    }
+    try {
+      this.processedData = await this.sendCommand(this.readCommand);
+      this.decodedData = this.decodeData();
+      this.dddFormat = this.convertToDdd();
+    } catch (error) {
+      console.error('Error in reading or decoding data:', error);
+    }
   }
 
   decodeData() {
@@ -95,12 +139,16 @@ export default class CardFile {
     const decoded: {[key: string]: any} = {};
 
     for (const key in this.dataFields) {
-      const {position, decoder} = this.dataFields[key];
+      const {position, decoder, mapper} = this.dataFields[key];
       const [start, end] = position;
 
       const slice = this.processedData.slice(start, end);
 
       decoded[key] = this.decodersMapper[decoder](slice);
+
+      if (mapper) {
+        decoded[key] = this.dataMapper[mapper](decoded[key]);
+      }
     }
 
     return decoded;
@@ -114,11 +162,9 @@ export default class CardFile {
   createReadBinaryCommand = (
     offset: number[],
     expected_bytes: number,
-  ): number[] => [
-    ...this.commandData.read_binary_prefix,
-    ...offset,
-    expected_bytes,
-  ];
+  ): number[] => {
+    return [...this.commandData.read_binary_prefix, ...offset, expected_bytes];
+  };
 
   getDigitalSignatureCommand = (): number[] =>
     this.commandData.compute_digital_signature;
@@ -180,56 +226,7 @@ export default class CardFile {
       hex = '0' + hex;
     }
 
-    const byteArray = hex.match(/.{2}/g);
-
-    const bigEndianArray = byteArray.reverse();
-
-    const bigEndianHex = bigEndianArray.join('');
-
-    return bigEndianHex.toString(16).padStart(4, '0').toUpperCase();
-  }
-
-  // convertToDdd() {
-  //   const tag = `${this.fileId[0].toString(16).padStart(2, '0')}${this.fileId[1]
-  //     .toString(16)
-  //     .padStart(2, '0')}${(0x00).toString(16).padStart(2, '0')}`;
-
-  //   const fileHeader = tag + this.hexToBigEndian(this.fileSize.toString(16));
-
-  //   let fileData;
-  //   if (this.processedData === 0) {
-  //     fileData = '00'.repeat(this.fileSize);
-  //   } else {
-  //     fileData = this.processedData
-  //       .map(byte => byte.toString(16).padStart(2, '0'))
-  //       .join('');
-  //   }
-
-  //   let formattedForDDD = fileHeader + fileData;
-
-  //   if (this.signature) {
-  //     const endTag = `${this.fileId[0]
-  //       .toString(16)
-  //       .padStart(2, '0')}${this.fileId[1]
-  //       .toString(16)
-  //       .padStart(2, '0')}${(0x01).toString(16).padStart(2, '0')}`;
-  //     formattedForDDD += endTag;
-
-  //     const signatureHex = this.signature
-  //       .map(byte => byte.toString(16).padStart(2, '0'))
-  //       .join('');
-  //     formattedForDDD += signatureHex;
-  //   }
-
-  //   return formattedForDDD;
-  // }
-  // Add this method inside the CardFile class
-  hexToBytes(hex) {
-    const bytes = new Uint8Array(hex.length / 2);
-    for (let i = 0; i < hex.length; i += 2) {
-      bytes[i / 2] = parseInt(hex.substr(i, 2), 16);
-    }
-    return bytes;
+    return hex.toUpperCase().padStart(4, '0');
   }
 
   getSignature() {
@@ -241,13 +238,12 @@ export default class CardFile {
       .padStart(2, '0')
       .toUpperCase()}${(0x01).toString(16).padStart(2, '0').toUpperCase()}`;
 
-    // Creating signature size: equivalent to struct.pack(">h", 128) in Python
     const signatureSize = (128).toString(16).padStart(4, '0').toUpperCase();
 
     const combinedSignature =
       signature +
       signatureSize +
-      this.signature // this.signature is now fileSignature
+      this.signature
         .map(byte => byte.toString(16).padStart(2, '0').toUpperCase())
         .join('');
 
@@ -284,7 +280,7 @@ export default class CardFile {
   }
 }
 
-export default class DynamicCardFile extends CardFile {
+export class DynamicCardFile extends CardFile {
   readingSpeed: number;
 
   constructor(
@@ -300,9 +296,21 @@ export default class DynamicCardFile extends CardFile {
     this.readingSpeed = readingSpeed;
   }
 
+  hexToBigEndian(hex) {
+    if (hex.startsWith('0x')) {
+      hex = hex.slice(2);
+    }
+
+    if (hex.length % 2 !== 0) {
+      hex = '0' + hex;
+    }
+
+    return hex.toUpperCase().padStart(4, '0');
+  }
+
   convertToDdd() {
     let fileData;
-    if (!this.processedData || this) {
+    if (!this.processedData || this.processedData.length === 0) {
       fileData = '00'.repeat(this.fileSize);
     } else {
       fileData = this.processedData
