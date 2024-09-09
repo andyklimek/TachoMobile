@@ -52,12 +52,12 @@ const FilesScreen = () => {
 
   return (
     <StyledSafeAreaView className="flex-1 bg-darkPurple pt-6">
-      <Heading title={t('Pliki')} classes="mb-6" />
+      <Heading title={t('Pliki')} classes="mb-4" />
 
       {files.length === 0 && <NoContent text={t('plików')} />}
 
       <StyledFlatList
-        className="px-4"
+        className="px-4 pt-4"
         data={files}
         showsVerticalScrollIndicator={false}
         renderItem={({item, idx}) => (
@@ -72,6 +72,7 @@ const FilesScreen = () => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
+        contentContainerStyle={{paddingBottom: 20}}
         onEndReached={fetchNextPage}
         onEndReachedThreshold={2}
       />

@@ -18,7 +18,7 @@ const DashboardScreen = () => {
         contentContainerStyle={{
           flexGrow: 1,
           display: 'flex',
-          justifyContent: 'space-center',
+          justifyContent: 'center',
         }}>
         <StyledText className="text-slate-200 text-3xl mb-4 font-light text-center">
           {t('Panel główny')}

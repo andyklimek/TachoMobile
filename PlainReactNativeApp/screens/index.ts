@@ -8,6 +8,7 @@ export {default as ReadersScreen} from './ReadersScreen';
 export {default as ReportsScreen} from './ReportsScreen';
 export {default as ReportDetailsScreen} from './ReportDetailsScreen';
 export {default as ReportDetailsScreenEvents} from './ReportDetailsScreen/ReportDetailsScreenEvents';
+export {default as ReportDetailsScreenFaults} from './ReportDetailsScreen/ReportDetailsScreenFaults';
 export {default as ReportDetailsScreenVehicles} from './ReportDetailsScreen/ReportDetailsScreenVehicles';
 export {default as ReportDetailsScreenPlaces} from './ReportDetailsScreen/ReportDetailsScreenPlaces';
 export {default as ReportDetailsScreenActivities} from './ReportDetailsScreen/ReportDetailsScreenActivities';

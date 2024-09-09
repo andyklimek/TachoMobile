@@ -1,3 +1,5 @@
+import {useMemo} from 'react';
+
 export type TachographCardType =
   | '00'
   | '01'
@@ -18,34 +20,9 @@ type SpecialCondition = '00' | '01' | '02' | '03';
 type WorkPeriod = '00' | '01' | '02' | '03' | '04' | '05';
 type ControlTypeBinary = string;
 
-export class DataMapper {
-  data: {
-    type_of_tachograph_card: Record<TachographCardType, string>;
-    nation: Record<NationCode, string>;
-    tacho_work_period: Record<WorkPeriod, string>;
-    region: Record<RegionCode, string>;
-    event_fault_type: Record<EventFaultType, string>;
-    slot: Record<SlotValue, string>;
-    driving_status: Record<DrivingStatus, string>;
-    card_status: Record<CardStatus, string>;
-    activity: Record<ActivityType, string>;
-    special_conditions: Record<SpecialCondition, string>;
-    control_type: Record<ControlTypeBinary, Record<string, string>>;
-  };
-  getTachographCardType: (type: TachographCardType) => string;
-  getNation: (nationCode: NationCode) => string;
-  getEventFaultType: (type: EventFaultType) => string;
-  getSlotValue: (slotCode: SlotValue) => string;
-  getDrivingStatus: (status: DrivingStatus) => string;
-  getCardStatus: (status: CardStatus) => string;
-  getActivity: (activityCode: ActivityType) => string;
-  getRegion: (regionCode: RegionCode) => string;
-  getSpecialCondition: (condition: SpecialCondition) => string;
-  getTypeWorkPeriod: (period: WorkPeriod) => string;
-  getControlType: (binaryRepr: ControlTypeBinary) => Record<string, string>;
-
-  constructor() {
-    this.data = {
+const useDataMapers = () => {
+  const data = useMemo(
+    () => ({
       type_of_tachograph_card: {
         '00': 'Reserved',
         '01': 'Driver card',
@@ -221,40 +198,54 @@ export class DataMapper {
           d: 'display used during this control activity',
         },
       },
-    };
-  }
+    }),
+    [],
+  );
 
-  getTachographCardType = (type: TachographCardType): string =>
-    this.data.type_of_tachograph_card[type];
-  getNation = (nationCode: NationCode) => this.data.nation[nationCode] || 'RFU';
-  getEventFaultType = (type: EventFaultType) =>
-    this.data.event_fault_type[type] || 'Manufacturer specific';
-  getSlotValue = (slotCode: SlotValue) => this.data.slot[slotCode];
-  getDrivingStatus = (status: DrivingStatus) =>
-    this.data.driving_status[status];
-  getCardStatus = (status: CardStatus) => this.data.card_status[status];
-  getActivity = (activityCode: ActivityType) =>
-    this.data.activity[activityCode];
-  getRegion = (regionCode: RegionCode) => this.data.region[regionCode];
-  getSpecialCondition = (condition: SpecialCondition) =>
-    this.data.special_conditions[condition] || 'RFU';
-  getTypeWorkPeriod = (period: WorkPeriod) =>
-    this.data.tacho_work_period[period];
-  getControlType = binaryRepr => {
-    let firstChar = binaryRepr[0];
-    let hexValue = parseInt(firstChar, 16);
-    let binaryString = hexValue.toString(2);
-
-    const controlTypeData = {};
+  const getTachographCardType = (type: TachographCardType): string =>
+    data.type_of_tachograph_card[type];
+  const getNation = (nationCode: NationCode) =>
+    data.nation[nationCode] || 'RFU';
+  const getEventFaultType = (type: EventFaultType) =>
+    data.event_fault_type[type] || 'Manufacturer specific';
+  const getSlotValue = (slotCode: SlotValue) => data.slot[slotCode];
+  const getDrivingStatus = (status: DrivingStatus) =>
+    data.driving_status[status];
+  const getCardStatus = (status: CardStatus) => data.card_status[status];
+  const getActivity = (activityCode: ActivityType) =>
+    data.activity[activityCode];
+  const getRegion = (regionCode: RegionCode) => data.region[regionCode];
+  const getSpecialCondition = (condition: SpecialCondition) =>
+    data.special_conditions[condition] || 'RFU';
+  const getTypeWorkPeriod = (period: WorkPeriod) =>
+    data.tacho_work_period[period];
+  const getControlType = (binaryRepr: ControlTypeBinary) => {
+    const controlTypeData: Record<string, string> = {};
     const controlDataSigns = ['c', 'v', 'p', 'd'];
 
-    for (let i = 0; i < binaryString.length; i++) {
+    for (let i = 0; i < binaryRepr.length; i++) {
       const sign = controlDataSigns[i];
-      const index = binaryString[i];
-
-      controlTypeData[sign] = this.data.control_type[index][sign];
+      const index = binaryRepr[i];
+      controlTypeData[sign] = data.control_type[index][sign];
     }
 
     return controlTypeData;
   };
-}
+
+  return {
+    data,
+    getTachographCardType,
+    getNation,
+    getEventFaultType,
+    getSlotValue,
+    getDrivingStatus,
+    getCardStatus,
+    getActivity,
+    getRegion,
+    getSpecialCondition,
+    getTypeWorkPeriod,
+    getControlType,
+  };
+};
+
+export default useDataMapers;

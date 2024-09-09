@@ -16,6 +16,7 @@ const keyToTitleMapper = {
   vehicle_registration_nation: 'Kraj Rejestracji Pojazdu',
   vehicle_registration_number: 'Numer Rejestracyjny Pojazdu',
   event_type: 'Typ Wydarzenia',
+  fault_type: 'Typ Naruszenia',
   begin_time: 'Czas Początkowy',
   end_time: 'Czas Końcowy',
   driving_status: 'Status Jazdy',
@@ -58,10 +59,13 @@ const useReport = (id: number) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchReport = async () => {
-    setLoading(true);
+  const fetchReport = async (reportId: number, refresh: boolean = false) => {
+    if (!refresh) {
+      setLoading(true);
+    }
+
     try {
-      const response = await axiosInstance.get(`/report/${id}/`);
+      const response = await axiosInstance.get(`/report/${reportId}/`);
 
       const data = response.data.data;
 
@@ -79,7 +83,14 @@ const useReport = (id: number) => {
     }
   }, [id]);
 
-  return {report, loading, error, transformData, translateKey};
+  return {
+    report,
+    loading,
+    error,
+    transformData,
+    translateKey,
+    fetchReport,
+  };
 };
 
 export default useReport;

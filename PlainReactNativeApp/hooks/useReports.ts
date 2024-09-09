@@ -32,9 +32,17 @@ const useReports = () => {
 
   const fetchReportsRefresh = async () => {
     try {
+      let data = [];
       const response = await axiosInstance.get('/report/all/');
 
-      const data = response.data.results;
+      data = [...response.data.results];
+      setNextPage(response.data.next);
+
+      if (response.data.next) {
+        const nextResponse = await axiosInstance.get(response.data.next);
+        data = [...data, ...nextResponse.data.results];
+        setNextPage(nextResponse.data.next);
+      }
 
       setReports(data);
     } catch (err) {

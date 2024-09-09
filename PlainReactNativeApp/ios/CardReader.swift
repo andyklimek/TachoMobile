@@ -14,8 +14,6 @@ class CardReader: NSObject {
     private let supportedProtocols = [
         "com.ftsafe.ir301",
         "com.ftsafe.iR301",
-//        "com.ftsafe.br301",
-//        "com.ftsafe.bR301"
     ]
     
     private let accessoryManager = EAAccessoryManager.shared()
@@ -58,7 +56,6 @@ class CardReader: NSObject {
         print("Scanning for devices...")
         
         let connectedAccessories = accessoryManager.connectedAccessories
-        print(connectedAccessories)
         for accessory in connectedAccessories {
             for protocolString in accessory.protocolStrings {
                 if supportedProtocols.contains(protocolString) {
@@ -77,6 +74,7 @@ class CardReader: NSObject {
         Task {
             do {
                 let devices = try await getDeviceList()
+                print(devices)
                 resolve(devices)
             } catch {
                 reject("NO_DEVICES", error.localizedDescription, error)
@@ -104,6 +102,7 @@ class CardReader: NSObject {
     }
 
     private func waitForCardInsertion(readerName: String) async throws {
+        print(readerName)
         var readerState = SCARD_READERSTATE()
         readerName.withCString { cString in
             readerState.szReader = cString
@@ -112,21 +111,28 @@ class CardReader: NSObject {
 
         var result: LONG
         var attempts = 0
+      
+        result = SCardGetStatusChange(self.gContxtHandle, DWORD(INFINITE), &readerState, 1)
 
         repeat {
             result = SCardGetStatusChange(self.gContxtHandle, DWORD(INFINITE), &readerState, 1)
-            if result != SCARD_S_SUCCESS {
+            print(readerState)
+            print(EAAccessoryManager.shared().connectedAccessories)
+            print("Bluetooth status: \(EAAccessoryManager.shared().connectedAccessories.count)")
+          if result != SCARD_S_SUCCESS {
                 if Int64(result) == SCARD_E_READER_UNAVAILABLE {
                     print("Reader unavailable, retrying...")
                     attempts += 1
                     try await Task.sleep(nanoseconds: UInt64(retryInterval * 1_000_000_000))
                 } else {
+                    print("here1")
                     throw NSError(domain: "CardReaderError", code: Int(result), userInfo: [NSLocalizedDescriptionKey: "Failed to get reader status: \(result)"])
                 }
             }
         } while Int64(result) == SCARD_E_READER_UNAVAILABLE && attempts < maxAttempts
 
         if result != SCARD_S_SUCCESS {
+            print("here2")
             throw NSError(domain: "CardReaderError", code: Int(result), userInfo: [NSLocalizedDescriptionKey: "Failed to get reader status after multiple attempts"])
         }
 
@@ -140,7 +146,7 @@ class CardReader: NSObject {
         Task {
             do {
                 try await self.waitForCardInsertion(readerName: readerName)
-
+              
                 var dwActiveProtocol: DWORD = 0
                 var cardHandle: SCARDHANDLE = 0
 

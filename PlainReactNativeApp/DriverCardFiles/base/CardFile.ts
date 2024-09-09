@@ -139,12 +139,16 @@ export class CardFile {
     const decoded: {[key: string]: any} = {};
 
     for (const key in this.dataFields) {
-      const {position, decoder, mapper} = this.dataFields[key];
+      const {position, decoder, mapper, onlyDate} = this.dataFields[key];
       const [start, end] = position;
 
       const slice = this.processedData.slice(start, end);
 
-      decoded[key] = this.decodersMapper[decoder](slice);
+      if (onlyDate && decoder === 'decodeToDate') {
+        decoded[key] = this.decodersMapper[decoder](slice, onlyDate);
+      } else {
+        decoded[key] = this.decodersMapper[decoder](slice);
+      }
 
       if (mapper) {
         decoded[key] = this.dataMapper[mapper](decoded[key]);
@@ -194,12 +198,32 @@ export class CardFile {
     return parseInt(byteData.join(''), 10);
   };
 
+  // decodeToDate = (encodedData: number[], onlyDate = false): string => {
+  //   if (encodedData.length !== 4) {
+  //     throw new Error(
+  //       'encodedData must be exactly 4 bytes long to decode into a date.',
+  //     );
+  //   }
+
+  //   const hexString = this.decodeOctetString(encodedData);
+
+  //   if (!onlyDate) {
+  //     const timestamp = parseInt(hexString, 16);
+  //     const date = new Date(timestamp * 1000);
+  //     return date.toISOString();
+  //   } else {
+  //     const year = parseInt(hexString.slice(0, 4), 16);
+  //     const month = parseInt(hexString.slice(4, 6), 16);
+  //     const day = parseInt(hexString.slice(6, 8), 16);
+  //     const date = new Date(year, month - 1, day);
+  //     return date.toISOString().split('T')[0].trim();
+  //   }
+  // };
   decodeToDate = (encodedData: number[], onlyDate = false): string => {
     if (encodedData.length !== 4) {
       throw new Error(
         'encodedData must be exactly 4 bytes long to decode into a date.',
       );
-      return '';
     }
 
     const hexString = this.decodeOctetString(encodedData);
@@ -209,11 +233,17 @@ export class CardFile {
       const date = new Date(timestamp * 1000);
       return date.toISOString();
     } else {
-      const year = parseInt(hexString.slice(0, 4), 16);
-      const month = parseInt(hexString.slice(4, 6), 16);
-      const day = parseInt(hexString.slice(6, 8), 16);
-      const date = new Date(year, month - 1, day);
-      return date.toISOString().split('T')[0].trim();
+      const year = parseInt(hexString.slice(0, 4));
+      const month = parseInt(hexString.slice(4, 6));
+      const day = parseInt(hexString.slice(6, 8));
+
+      const date = new Date(Date.UTC(year, month - 1, day));
+
+      const yearStr = date.getUTCFullYear().toString().padStart(4, '0');
+      const monthStr = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+      const dayStr = date.getUTCDate().toString().padStart(2, '0');
+
+      return `${yearStr}-${monthStr}-${dayStr}T00:00:00.000Z`;
     }
   };
 
@@ -277,6 +307,14 @@ export class CardFile {
     }
 
     return formattedForDDD.toLowerCase();
+  }
+
+  getDataForPostRequest() {
+    if (!this.decodedData) {
+      return null;
+    }
+
+    return this.decodedData;
   }
 }
 
@@ -375,16 +413,16 @@ export class DynamicCardFile extends CardFile {
       }
 
       this.processedData = readData;
-      // this.decodedData = this.decodeData();
+      this.decodedData = this.decodeData();
       this.dddFormat = this.convertToDdd();
       this.wasReadSuccessfully = true;
     } catch (error) {
       if (readData.length > 0) {
         this.processedData = readData;
-        // this.decodedData = this.decodeData();
+        this.decodedData = this.decodeData();
         this.wasReadSuccessfully = true;
       } else {
-        // this.decodedData = null;
+        this.decodedData = null;
         console.error(error);
         this.wasReadSuccessfully = false;
       }

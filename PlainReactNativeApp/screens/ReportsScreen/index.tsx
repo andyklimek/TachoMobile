@@ -35,13 +35,12 @@ const ReportsScreen = () => {
 
   return (
     <StyledSafeAreaView className="flex-1 bg-darkPurple pt-6">
-      <Heading title={t('Raporty')} classes="mb-10" />
+      <Heading title={t('Raporty')} classes="mb-4" />
 
       {(reports.length === 0 || error) && <NoContent elementName="raportów" />}
 
       <StyledFlatList
-        className="px-4"
-        contentContainerStyle={{flexGrow: 1}}
+        className="px-4 pt-4"
         data={reports}
         showsVerticalScrollIndicator={false}
         renderItem={({item, idx}) => (
@@ -56,6 +55,7 @@ const ReportsScreen = () => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
+        contentContainerStyle={{paddingBottom: 20}}
         onEndReached={fetchNextPage}
         onEndReachedThreshold={2}
       />

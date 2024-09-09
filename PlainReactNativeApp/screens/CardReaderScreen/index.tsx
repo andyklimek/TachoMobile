@@ -6,6 +6,7 @@ import {Heading} from '@/components';
 import {useTranslation} from 'react-i18next';
 import {ScanEye, MailCheck, CircleX} from 'lucide-react-native';
 import useCardReader from '@/hooks/useCardReader';
+import moment from 'moment';
 
 const StyledTouchableOpacity = styled(TouchableOpacity);
 const StyledText = styled(Text);
@@ -18,13 +19,25 @@ const CardReaderScreen = () => {
   const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
-  const {readCardData, sendDataToServer, connectReader} = useCardReader();
+  const {
+    readCardData,
+    sendDataToServer,
+    connectReader,
+    lastRead,
+    lastReadLoading,
+  } = useCardReader();
 
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
     }, 5000);
   }, []);
+
+  const timeDifference = (): string => {
+    const now = moment();
+    const last = moment(lastRead);
+    return `${now.diff(last, 'days')} ${t('dni temu')}`;
+  };
 
   const handlePress = async () => {
     setLoading(true);
@@ -65,10 +78,20 @@ const CardReaderScreen = () => {
         <StyledText className="text-slate-200">
           {`${t('Ostatni odczyt')}:`}
         </StyledText>
-        {/* TODO Last update implementation */}
-        <StyledText className="text-slate-200 font-semibold">
-          22.08.2024 12:53
-        </StyledText>
+        {lastRead && (
+          <>
+            <StyledText className="text-slate-200 font-semibold">
+              {success
+                ? t('Teraz')
+                : lastReadLoading
+                ? t('Ładowanie...')
+                : `${moment(lastRead).format('DD.MM.YYYY HH:mm')}`}
+            </StyledText>
+            <StyledText className="text-slate-200 font-semibold">
+              {!lastReadLoading && timeDifference()}
+            </StyledText>
+          </>
+        )}
       </StyledView>
 
       <StyledTouchableOpacity

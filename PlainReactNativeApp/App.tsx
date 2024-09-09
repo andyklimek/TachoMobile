@@ -12,6 +12,7 @@ import {
   ReportDetailsScreenEvents,
   ReportDetailsScreenVehicles,
   ReportDetailsScreenPlaces,
+  ReportDetailsScreenFaults,
   ReportDetailsScreenActivities,
   ReportDetailsScreenActivitiesData,
   DocumentsScreen,
@@ -107,6 +108,11 @@ const Navigator = () => {
           <Stack.Screen
             name="reportDetailsEvents"
             component={ReportDetailsScreenEvents}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="reportDetailsFaults"
+            component={ReportDetailsScreenFaults}
             options={{headerShown: false}}
           />
           <Stack.Screen

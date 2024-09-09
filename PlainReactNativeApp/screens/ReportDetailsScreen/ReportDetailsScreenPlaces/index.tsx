@@ -1,21 +1,27 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {styled} from 'nativewind';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {ScrollView, View} from 'react-native';
+import {FlatList, RefreshControl} from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import useReport from '@/hooks/useReport';
 import LoadingScreen from '@/screens/LoadingScreen';
 import {DataElement, NoContent, Heading} from '@/components';
 import moment from 'moment';
 
-const StyledView = styled(View);
 const StyledSafeAreaView = styled(SafeAreaView);
-const StyledScrollView = styled(ScrollView);
+const StyledFlatList = styled(FlatList);
 
 const ReportDetailsScreenPlaces = () => {
   const route = useRoute();
   const {id} = route.params;
-  const {report, loading, error, translateKey} = useReport(id);
+  const {report, loading, error, translateKey, fetchReport} = useReport(id);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchReport(id, true);
+    setRefreshing(false);
+  };
 
   if (loading) {
     return <LoadingScreen />;
@@ -25,25 +31,32 @@ const ReportDetailsScreenPlaces = () => {
 
   return (
     <StyledSafeAreaView className="flex-1 bg-darkPurple pt-6">
-      <StyledScrollView contentContainerStyle={{flexGrow: 1}}>
-        <StyledView className="flex-1 px-4">
-          <Heading title="Miejsca" classes="mb-10" />
-          {reportPlaces.length === 0 || error ? (
-            <NoContent elementName="miejsc" />
-          ) : (
-            reportPlaces.map((place, idx) => (
-              <DataElement
-                key={idx}
-                title={`${moment(place.entry_time).format(
-                  'DD/MM/YYYY/HH:mm',
-                )}/${place.daily_work_period_country}`}
-                data={place}
-                translateKey={translateKey}
-              />
-            ))
-          )}
-        </StyledView>
-      </StyledScrollView>
+      <Heading title="Miejsca" classes="mb-4" />
+
+      {(reportPlaces.length === 0 || error) && (
+        <NoContent elementName="miejsc" />
+      )}
+
+      <StyledFlatList
+        className="px-4 pt-4"
+        data={reportPlaces}
+        showsVerticalScrollIndicator={false}
+        renderItem={({item, idx}) => (
+          <DataElement
+            key={idx}
+            title={`${moment(item.entry_time).format('DD/MM/YYYY/HH:mm')}/${
+              item.daily_work_period_country
+            }`}
+            data={item}
+            translateKey={translateKey}
+          />
+        )}
+        keyExtractor={item => item.id}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        contentContainerStyle={{paddingBottom: 20}}
+      />
     </StyledSafeAreaView>
   );
 };

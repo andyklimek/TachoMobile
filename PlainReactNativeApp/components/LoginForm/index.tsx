@@ -31,22 +31,22 @@ const LoginForm = () => {
   const {t} = useTranslation();
 
   const onSubmit = async (data: any) => {
-    const {CardReader} = NativeModules;
-    try {
-      console.log(await CardReader.connectToUsbReader());
-    } catch (e) {
-      console.log(e);
-    }
-
-    // setLoading(true);
+    // const {CardReader} = NativeModules;
     // try {
-    //   await login(data.username, data.password);
-    //   navigation.navigate('dashboard');
-    // } catch (err) {
-    //   setError(true);
-    // } finally {
-    //   setLoading(false);
+    //   console.log(await CardReader.connectToUsbReader());
+    // } catch (e) {
+    //   console.log(e);
     // }
+
+    setLoading(true);
+    try {
+      await login(data.username, data.password);
+      navigation.navigate('dashboard');
+    } catch (err) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
