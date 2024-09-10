@@ -112,7 +112,7 @@ public class CardReaderModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void sendCommand(ReadableArray commandArray, Promise promise) {
+    public void sendAPDUCommand(ReadableArray commandArray, Promise promise) {
         try {
             byte[] command = new byte[commandArray.size()];
             for (int i = 0; i < commandArray.size(); i++) {

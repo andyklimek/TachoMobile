@@ -97,7 +97,7 @@ const CardReaderScreen = () => {
       <StyledTouchableOpacity
         className="btn bg-slate-200 w-[70vw] p-3 mb-4 rounded-xl aspect-square shadow-xl absolute top-[50%] -translate-y-20"
         onPress={handlePress}
-        disabled={loading || success || error}>
+        disabled={loading || success || !!error}>
         <StyledView className="flex-1 justify-center items-center p-4">
           {renderIcon()}
           <StyledText className="text-2xl font-light text-darkPurple">

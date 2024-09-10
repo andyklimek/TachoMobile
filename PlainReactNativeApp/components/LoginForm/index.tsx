@@ -30,24 +30,16 @@ const LoginForm = () => {
   const {login} = useAuth();
   const {t} = useTranslation();
 
-  const {CardReader} = NativeModules;
   const onSubmit = async (data: any) => {
-    const {CardReader} = NativeModules;
+    setLoading(true);
     try {
-      console.log(await CardReader.connectToUsbReader());
-    } catch (e) {
-      console.log(e);
+      await login(data.username, data.password);
+      navigation.navigate('dashboard');
+    } catch (err) {
+      setError(true);
+    } finally {
+      setLoading(false);
     }
-
-    // setLoading(true);
-    // try {
-    //   await login(data.username, data.password);
-    //   navigation.navigate('dashboard');
-    // } catch (err) {
-    //   setError(true);
-    // } finally {
-    //   setLoading(false);
-    // }
   };
 
   return (
@@ -99,13 +91,6 @@ const LoginForm = () => {
           className="mt-4 bg-lightPurple shadow-md py-3 rounded-xl text-darkPurple"
           icon={<ChevronRight className="text-white" size={28} />}
           onPress={handleSubmit(onSubmit)}
-        />
-        <Button
-          text={'test'}
-          loading={loading}
-          className="mt-4 bg-lightPurple shadow-md py-3 rounded-xl text-darkPurple"
-          icon={<ChevronRight className="text-white" size={28} />}
-          onPress={handleSubmit(test)}
         />
       </StyledView>
     </StyledKeyboardAvoidingView>

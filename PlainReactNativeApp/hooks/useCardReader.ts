@@ -1,4 +1,5 @@
 import {useState, useEffect} from 'react';
+import {Platform} from 'react-native';
 import {NativeModules} from 'react-native';
 import {
   Ic,
@@ -30,7 +31,11 @@ const useCardReader = () => {
   useEffect(() => {
     const establishReaderContext = async () => {
       try {
-        await CardReader.establishContext();
+        if (Platform.OS === 'ios') {
+          await CardReader.establishContext();
+        } else {
+          await CardReader.connectToUsbReader();
+        }
       } catch (error) {
         throw Error(error);
       }
@@ -55,8 +60,14 @@ const useCardReader = () => {
 
   const connectReader = async () => {
     try {
-      const deviceList = await CardReader.getDeviceListPromise();
-      const readerResp = await CardReader.connectReader(deviceList[0]);
+      let readerResp;
+      if (Platform.OS === 'ios') {
+        const deviceList = await CardReader.getDeviceListPromise();
+        readerResp = await CardReader.connectReader(deviceList[0]);
+      } else {
+        const {CardReader} = NativeModules;
+        readerResp = await CardReader.connectToUsbReader();
+      }
       setConnection(readerResp);
     } catch (error) {
       throw Error(error);
