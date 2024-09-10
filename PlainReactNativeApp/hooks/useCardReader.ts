@@ -65,7 +65,7 @@ const useCardReader = () => {
         const deviceList = await CardReader.getDeviceListPromise();
         readerResp = await CardReader.connectReader(deviceList[0]);
       } else {
-        const {CardReader} = NativeModules;
+        // const {CardReader} = NativeModules;
         readerResp = await CardReader.connectToUsbReader();
       }
       setConnection(readerResp);

@@ -3,57 +3,67 @@ import {styled} from 'nativewind';
 import {Button, Heading} from '@/components';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {ScrollView, View} from 'react-native';
+import {FlatList} from 'react-native';
 import moment from 'moment';
+import {useTranslation} from 'react-i18next';
 
-const StyledView = styled(View);
 const StyledSafeAreaView = styled(SafeAreaView);
-const StyledScrollView = styled(ScrollView);
+const StyledFlatList = styled(FlatList);
 
 const ReportDetailsScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const {id, date} = route.params;
+  const {t} = useTranslation();
 
   const handlePress = (nav: string) => {
     navigation.navigate(nav, {id});
   };
 
+  const listElements = [
+    {
+      title: 'Wydarzenia',
+      nav: 'reportDetailsEvents',
+    },
+    {
+      title: 'Naruszenia',
+      nav: 'reportDetailsFaults',
+    },
+    {
+      title: 'Miejsca',
+      nav: 'reportDetailsPlaces',
+    },
+    {
+      title: 'Pojazdy',
+      nav: 'reportDetailsVehicles',
+    },
+    {
+      title: 'Aktywności',
+      nav: 'reportDetailsActivities',
+    },
+  ];
+
   return (
     <StyledSafeAreaView className="flex-1 bg-darkPurple pt-6">
-      <StyledScrollView contentContainerStyle={{flexGrow: 1}}>
-        <Heading
-          title={`${moment(date).format('DD/MM/YYYY')}/${id}`}
-          classes="mb-10"
-        />
-        <StyledView className="flex-1 px-4">
+      <Heading
+        title={`${moment(date).format('DD/MM/YYYY')}/${id}`}
+        classes="mb-4"
+      />
+      <StyledFlatList
+        className="px-4 pt-4"
+        data={listElements}
+        showsVerticalScrollIndicator={false}
+        renderItem={({item, idx}) => (
           <Button
-            text="Wydarzenia"
-            onPress={() => handlePress('reportDetailsEvents', id)}
-            className="rounded-lg bg-lightPurple p-2 mb-3"
+            key={idx}
+            text={t(item.title)}
+            onPress={() => handlePress(item.nav, id)}
+            className="rounded-lg bg-lightPurple p-2 mb-2"
           />
-          <Button
-            text="Naruszenia"
-            onPress={() => handlePress('reportDetailsFaults', id)}
-            className="rounded-lg bg-lightPurple p-2 mb-3"
-          />
-          <Button
-            text="Miejsca"
-            onPress={() => handlePress('reportDetailsPlaces', id)}
-            className="rounded-lg bg-lightPurple p-2 mb-3"
-          />
-          <Button
-            text="Pojazdy"
-            onPress={() => handlePress('reportDetailsVehicles', id)}
-            className="rounded-lg bg-lightPurple p-2 mb-3"
-          />
-          <Button
-            text="Aktywności"
-            onPress={() => handlePress('reportDetailsActivities', id)}
-            className="rounded-lg bg-lightPurple p-2 mb-3"
-          />
-        </StyledView>
-      </StyledScrollView>
+        )}
+        keyExtractor={item => item.title}
+        contentContainerStyle={{paddingBottom: 20}}
+      />
     </StyledSafeAreaView>
   );
 };

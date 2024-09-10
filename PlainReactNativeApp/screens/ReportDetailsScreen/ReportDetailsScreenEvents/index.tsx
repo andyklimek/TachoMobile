@@ -29,6 +29,7 @@ const ReportDetailsScreenEvents = () => {
     return <LoadingScreen />;
   }
 
+  console.log('report', report.events);
   const reportEvents = report.events || [];
 
   return (

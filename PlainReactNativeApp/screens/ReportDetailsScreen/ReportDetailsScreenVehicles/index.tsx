@@ -1,180 +1,66 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {styled} from 'nativewind';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {ScrollView, View} from 'react-native';
+import {FlatList, RefreshControl} from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import useReport from '@/hooks/useReport';
 import LoadingScreen from '@/screens/LoadingScreen';
 import {DataElement, NoContent, Heading} from '@/components';
 import moment from 'moment';
+import {useTranslation} from 'react-i18next';
 
-const StyledView = styled(View);
 const StyledSafeAreaView = styled(SafeAreaView);
-const StyledScrollView = styled(ScrollView);
+const StyledFlatList = styled(FlatList);
 
 const ReportDetailsScreenVehicles = () => {
   const route = useRoute();
   const {id} = route.params;
-  const {report, loading, error, translateKey} = useReport(id);
+  const {report, loading, error, translateKey, fetchReport} = useReport(id);
+  const [refreshing, setRefreshing] = useState(false);
+  const {t} = useTranslation();
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchReport(id, true);
+    setRefreshing(false);
+  };
 
   if (loading) {
     return <LoadingScreen />;
   }
 
-  const reportVehicles = report.vehicles || [];
+  const reportVehicles = report.vehicles_used || [];
 
   return (
     <StyledSafeAreaView className="flex-1 bg-darkPurple pt-6">
-      <StyledScrollView contentContainerStyle={{flexGrow: 1}}>
-        <Heading title="Pojazdy" classes="mb-10" />
-        <StyledView className="flex-1 px-4">
-          {reportVehicles.length === 0 || error ? (
-            <NoContent elementName="pojazdów" />
-          ) : (
-            reportVehicles.map((vehicle, idx) => (
-              <DataElement
-                key={idx}
-                title={`${moment(vehicle.end_time).format('HH/MM/YYYY')}/${
-                  vehicle.vehicle_registration_number
-                }`}
-                data={vehicle}
-                translateKey={translateKey}
-              />
-            ))
+      <Heading title={t('Pojazdy')} classes="mb-4" />
+
+      {reportVehicles.length === 0 || error ? (
+        <NoContent elementName="pojazdów" />
+      ) : (
+        <StyledFlatList
+          className="px-4 pt-4"
+          data={reportVehicles}
+          showsVerticalScrollIndicator={false}
+          renderItem={({item, idx}) => (
+            <DataElement
+              key={idx}
+              title={`${item.vehicle_registration_number} - ${moment(
+                item.vehicle_first_use,
+              ).format('DD/MM/YYYY')}`}
+              data={item}
+              translateKey={translateKey}
+            />
           )}
-        </StyledView>
-      </StyledScrollView>
+          keyExtractor={item => item.id}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          contentContainerStyle={{paddingBottom: 20}}
+        />
+      )}
     </StyledSafeAreaView>
   );
 };
 
 export default ReportDetailsScreenVehicles;
-
-// import React, {useState} from 'react';
-// import {styled} from 'nativewind';
-// import {SafeAreaView} from 'react-native-safe-area-context';
-// import {FlatList, RefreshControl} from 'react-native';
-// import {useRoute} from '@react-navigation/native';
-// import useReport from '@/hooks/useReport';
-// import LoadingScreen from '@/screens/LoadingScreen';
-// import {DataElement, NoContent, Heading} from '@/components';
-// import moment from 'moment';
-// import {useTranslation} from 'react-i18next';
-
-// const StyledSafeAreaView = styled(SafeAreaView);
-// const StyledFlatList = styled(FlatList);
-
-// const ReportDetailsScreenEvents = () => {
-//   const route = useRoute();
-//   const {id} = route.params;
-//   const {report, loading, error, translateKey, fetchReport} = useReport(id);
-//   const [refreshing, setRefreshing] = useState(false);
-//   const {t} = useTranslation();
-
-//   const onRefresh = async () => {
-//     setRefreshing(true);
-//     await fetchReport(id, true);
-//     setRefreshing(false);
-//   };
-
-//   if (loading) {
-//     return <LoadingScreen />;
-//   }
-
-//   const reportEvents = report.events || [];
-
-//   return (
-//     <StyledSafeAreaView className="flex-1 bg-darkPurple pt-6">
-//       <Heading title={t('Wydarzenia')} classes="mb-4" />
-
-//       {(reportEvents.length === 0 || error) && (
-//         <NoContent elementName="wydarzeń" />
-//       )}
-
-//       <StyledFlatList
-//         className="px-4 pt-4"
-//         data={reportEvents}
-//         showsVerticalScrollIndicator={false}
-//         renderItem={({item, idx}) => (
-//           <DataElement
-//             key={idx}
-//             title={moment(item.end_time).format('DD/MM/YYYY/HH:mm')}
-//             data={item}
-//             translateKey={translateKey}
-//           />
-//         )}
-//         keyExtractor={item => item.id}
-//         refreshControl={
-//           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-//         }
-//         contentContainerStyle={{paddingBottom: 20}}
-//       />
-//     </StyledSafeAreaView>
-//   );
-// };
-
-// export default ReportDetailsScreenEvents;
-// import React, {useState} from 'react';
-// import {styled} from 'nativewind';
-// import {SafeAreaView} from 'react-native-safe-area-context';
-// import {FlatList, RefreshControl} from 'react-native';
-// import {useRoute} from '@react-navigation/native';
-// import useReport from '@/hooks/useReport';
-// import LoadingScreen from '@/screens/LoadingScreen';
-// import {DataElement, NoContent, Heading} from '@/components';
-// import moment from 'moment';
-
-// const StyledSafeAreaView = styled(SafeAreaView);
-// const StyledFlatList = styled(FlatList);
-
-// const ReportDetailsScreenVehicles = () => {
-//   const route = useRoute();
-//   const {id} = route.params;
-//   const {report, loading, error, translateKey, fetchReport} = useReport(id);
-//   const [refreshing, setRefreshing] = useState(false);
-
-//   const onRefresh = async () => {
-//     setRefreshing(true);
-//     await fetchReport(id, true);
-//     setRefreshing(false);
-//   };
-
-//   if (loading) {
-//     return <LoadingScreen />;
-//   }
-
-//   const reportVehicles = report.vehicles || [];
-
-//   return (
-//     <StyledSafeAreaView className="flex-1 bg-darkPurple pt-6">
-//       <Heading title="Pojazdy" classes="mb-10" />
-
-//       {reportVehicles.length === 0 || error ? (
-//         <NoContent elementName="pojazdów" />
-//       ) : (
-//         <StyledFlatList
-//           className="px-4"
-//           data={reportVehicles}
-//           showsVerticalScrollIndicator={false}
-//           renderItem={({item, idx}) => (
-//             <DataElement
-//               key={idx}
-//               title={`${moment(item.end_time).format('HH/MM/YYYY')}/${
-//                 item.vehicle_registration_number
-//               }`}
-//               data={item}
-//               translateKey={translateKey}
-//             />
-//           )}
-//           keyExtractor={item => item.id}
-//           refreshControl={
-//             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-//           }
-//           contentContainerStyle={{paddingBottom: 20}}
-//         />
-//       )}
-//     </StyledSafeAreaView>
-//   );
-// };
-
-// export default ReportDetailsScreenVehicles;

@@ -1,0 +1,116 @@
+{
+  "events_data": [
+    {
+      "event_type": 5,
+      "begin_time": "2019-01-08T09:50:07.000Z",
+      "end_time": "2019-01-08T09:50:07.000Z",
+      "vehicle_registration_nation": "28",
+      "vehicle_registration_number": "GDA7ML1"
+    },
+    {
+      "event_type": 3,
+      "begin_time": "2019-02-14T13:19:49.000Z",
+      "end_time": "2019-02-14T13:18:15.000Z",
+      "vehicle_registration_nation": "28",
+      "vehicle_registration_number": "ST3640N"
+    },
+    {
+      "event_type": 8,
+      "begin_time": "2019-05-02T11:05:26.000Z",
+      "end_time": "2019-05-02T11:07:26.000Z",
+      "vehicle_registration_nation": "28",
+      "vehicle_registration_number": "SK 405NW"
+    },
+    {
+      "event_type": 8,
+      "begin_time": "2019-05-02T11:07:43.000Z",
+      "end_time": "2019-05-02T11:07:43.000Z",
+      "vehicle_registration_nation": "28",
+      "vehicle_registration_number": "SK 405NW"
+    },
+    {
+      "event_type": 8,
+      "begin_time": "2019-05-02T11:08:04.000Z",
+      "end_time": "2019-05-02T11:11:57.000Z",
+      "vehicle_registration_nation": "28",
+      "vehicle_registration_number": "SK 405NW"
+    },
+    {
+      "event_type": 3,
+      "begin_time": "2019-06-06T21:48:54.000Z",
+      "end_time": "2019-06-06T21:47:07.000Z",
+      "vehicle_registration_nation": "28",
+      "vehicle_registration_number": "SK 405NW"
+    },
+    {
+      "event_type": 3,
+      "begin_time": "2020-01-22T20:36:35.000Z",
+      "end_time": "2020-01-22T20:32:45.000Z",
+      "vehicle_registration_nation": "28",
+      "vehicle_registration_number": "ST3640N"
+    },
+    {
+      "event_type": 8,
+      "begin_time": "2020-10-28T13:22:10.000Z",
+      "end_time": "2020-10-28T13:22:32.000Z",
+      "vehicle_registration_nation": "28",
+      "vehicle_registration_number": "SK 405NW"
+    },
+    {
+      "event_type": 8,
+      "begin_time": "2020-11-10T20:59:03.000Z",
+      "end_time": "2020-11-10T20:59:07.000Z",
+      "vehicle_registration_nation": "28",
+      "vehicle_registration_number": "SK 405NW"
+    },
+    {
+      "event_type": 8,
+      "begin_time": "2020-11-10T20:59:03.000Z",
+      "end_time": "2020-11-10T20:59:28.000Z",
+      "vehicle_registration_nation": "28",
+      "vehicle_registration_number": "SK 405NW"
+    },
+    {
+      "event_type": 8,
+      "begin_time": "2020-12-04T12:19:40.000Z",
+      "end_time": "2020-12-04T12:38:38.000Z",
+      "vehicle_registration_nation": "28",
+      "vehicle_registration_number": "SK 405NW"
+    },
+    {
+      "event_type": 8,
+      "begin_time": "2020-12-04T13:06:38.000Z",
+      "end_time": "2020-12-04T13:16:48.000Z",
+      "vehicle_registration_nation": "28",
+      "vehicle_registration_number": "SK 405NW"
+    },
+    {
+      "event_type": 8,
+      "begin_time": "2020-12-04T13:41:13.000Z",
+      "end_time": "2020-12-04T14:06:09.000Z",
+      "vehicle_registration_nation": "28",
+      "vehicle_registration_number": "SK 405NW"
+    },
+    {
+      "event_type": 8,
+      "begin_time": "2020-12-04T14:06:44.000Z",
+      "end_time": "2020-12-04T14:07:25.000Z",
+      "vehicle_registration_nation": "28",
+      "vehicle_registration_number": "SK 405NW"
+    },
+    {
+      "event_type": 8,
+      "begin_time": "2020-12-17T04:57:27.000Z",
+      "end_time": "2020-12-17T05:05:48.000Z",
+      "vehicle_registration_nation": "28",
+      "vehicle_registration_number": "SK 405NW"
+    },
+    {
+      "event_type": 8,
+      "begin_time": "2020-12-17T05:48:03.000Z",
+      "end_time": "2020-12-17T05:51:42.000Z",
+      "vehicle_registration_nation": "28",
+      "vehicle_registration_number": "SK 405NW"
+    }
+  ]
+}

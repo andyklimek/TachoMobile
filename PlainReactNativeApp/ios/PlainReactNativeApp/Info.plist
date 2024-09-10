@@ -46,6 +46,8 @@
 		<string>com.ftsafe.ir301</string>
 		<string>com.ftsafe.iR301</string>
 	</array>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Twoja aplikacja potrzebuje dostępu do Bluetooth, aby wykrywać urządzenia.</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

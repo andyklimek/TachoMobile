@@ -59,7 +59,7 @@ const LoginForm = () => {
           name="username"
           render={({field: {onChange, onBlur, value}}) => (
             <StyledTextInput
-              className="bg-lightBeige rounded-xl p-4 mb-4"
+              className="bg-lightBeige rounded-xl px-2 py-4 mb-4"
               placeholder={t('Nazwa użytkownika')}
               placeholderTextColor="#000"
               onBlur={onBlur}
@@ -74,7 +74,7 @@ const LoginForm = () => {
           name="password"
           render={({field: {onChange, onBlur, value}}) => (
             <StyledTextInput
-              className="bg-lightBeige rounded-xl p-4 mb-4"
+              className="bg-lightBeige rounded-xl px-2 py-4 mb-4"
               placeholder={t('Hasło')}
               placeholderTextColor="#000"
               onBlur={onBlur}
@@ -88,7 +88,7 @@ const LoginForm = () => {
         <Button
           text={t('Zaloguj')}
           loading={loading}
-          className="mt-4 bg-lightPurple shadow-md py-3 rounded-xl text-darkPurple"
+          className="mt-4 bg-lightPurple shadow-md py-3 rounded-full text-darkPurple"
           icon={<ChevronRight className="text-white" size={28} />}
           onPress={handleSubmit(onSubmit)}
         />

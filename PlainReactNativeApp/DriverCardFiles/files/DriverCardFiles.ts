@@ -313,12 +313,17 @@ export class EventsData extends DynamicCardFile {
       [0x05, 0x02],
       0x6c0,
       {
-        event_type: {position: [0, 1], decoder: 'decodeToInt'},
+        event_type: {
+          position: [0, 1],
+          decoder: 'decodeToInt',
+          mapper: 'getEventFaultType',
+        },
         begin_time: {position: [1, 5], decoder: 'decodeToDate'},
         end_time: {position: [5, 9], decoder: 'decodeToDate'},
         vehicle_registration_nation: {
           position: [9, 10],
           decoder: 'decodeOctetString',
+          mapper: 'getNation',
         },
         vehicle_registration_number: {
           position: [10, 24],
@@ -380,12 +385,17 @@ export class FaultsData extends DynamicCardFile {
       [0x05, 0x03],
       0x480,
       {
-        fault_type: {position: [0, 1], decoder: 'decodeToInt'},
+        fault_type: {
+          position: [0, 1],
+          decoder: 'decodeToInt',
+          mapper: 'getEventFaultType',
+        },
         begin_time: {position: [1, 5], decoder: 'decodeToDate'},
         end_time: {position: [5, 9], decoder: 'decodeToDate'},
         vehicle_registration_nation: {
           position: [9, 10],
           decoder: 'decodeOctetString',
+          mapper: 'getNation',
         },
         vehicle_registration_number: {
           position: [10, 24],

@@ -225,6 +225,25 @@ const ReportDetailsScreenActivitiesData = () => {
       });
     }
 
+    cleanedArray.sort((a, b) => {
+      const aTime = a.time.split(':').map(Number);
+      const bTime = b.time.split(':').map(Number);
+
+      if (aTime[0] < bTime[0]) {
+        return -1;
+      } else if (aTime[0] > bTime[0]) {
+        return 1;
+      } else {
+        if (aTime[1] < bTime[1]) {
+          return -1;
+        } else if (aTime[1] > bTime[1]) {
+          return 1;
+        } else {
+          return 0;
+        }
+      }
+    });
+
     return cleanedArray;
   };
 
@@ -245,6 +264,7 @@ const ReportDetailsScreenActivitiesData = () => {
   }
 
   let reportCleaned = cleanActivityArray(reportActivities);
+  console.log(reportCleaned);
 
   if (loading) {
     return <LoadingScreen />;

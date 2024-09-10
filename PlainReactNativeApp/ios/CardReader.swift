@@ -102,7 +102,6 @@ class CardReader: NSObject {
     }
 
     private func waitForCardInsertion(readerName: String) async throws {
-        print(readerName)
         var readerState = SCARD_READERSTATE()
         readerName.withCString { cString in
             readerState.szReader = cString
@@ -225,4 +224,3 @@ class CardReader: NSObject {
         }
     }
 }
-
