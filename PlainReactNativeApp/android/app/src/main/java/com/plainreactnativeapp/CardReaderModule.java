@@ -12,11 +12,14 @@ import android.hardware.usb.UsbManager;
 
 import androidx.annotation.NonNull;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.WritableArray;
 import com.ftsafe.readerScheme.FTException;
 import com.ftsafe.readerScheme.FTReader;
 import com.ftsafe.DK;
@@ -46,8 +49,7 @@ public class CardReaderModule extends ReactContextBaseJavaModule {
                     if (isConnected) {
                         try {
                             ftReader.readerPowerOn(device.getDeviceName(), 0);
-                            byte[] resp = sendCommand(new byte[]{(byte) 0x00, (byte) 0xa4, (byte) 0x04, (byte) 0x0c, (byte) 0x06, (byte) 0xff, (byte) 0x54, (byte) 0x41, (byte) 0x43, (byte) 0x48, (byte) 0x4f});
-                            Log.d(TAG, Arrays.toString(resp) + " Card connected");
+                            Log.d(TAG, "Smart card connected");
                         } catch (FTException e) {
                             Log.d(TAG, "Connection to card was not possible.");
                         }
@@ -81,22 +83,58 @@ public class CardReaderModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void connectToUsbReader(Promise promise) {
         try {
-            this.ftReader = new FTReader(getReactApplicationContext(), this.mHandler, DK.FTREADER_TYPE_USB);
-            this.ftReader.readerFind();
-            promise.resolve("Waiting to give permission by user...");
+            if (!isConnected) {
+                this.ftReader = new FTReader(getReactApplicationContext(), this.mHandler, DK.FTREADER_TYPE_USB);
+                this.ftReader.readerFind();
+            }
+            promise.resolve("Connected");
         } catch (FTException e) {
             Log.e(TAG, "Error connecting to USB device", e);
             promise.reject(new Throwable("Couldn't find usb reader"));
         }
     }
 
-    public byte[] sendCommand(byte[] command) {
+    @ReactMethod
+    public void sendTestCommand(Promise promise) {
+        byte[] apduCommand = new byte[]{(byte) 0x00, // CLA
+                (byte) 0xA4, // INS
+                (byte) 0x04, // P1
+                (byte) 0x00, // P2
+                (byte) 0x07, // Lc (długość danych)
+                (byte) 0xA0, (byte) 0x00, (byte) 0x00, (byte) 0x02, (byte) 0x47, (byte) 0x10, (byte) 0x01 // dane
+        };
         try {
-            byte[] resp = ftReader.readerXfr(device.getDeviceName(), 0, command);
-            return resp;
+            byte[] test = sendCommand(apduCommand);
+            promise.resolve("Test command successfully send");
         } catch (FTException e) {
-            throw new RuntimeException(e);
+            promise.reject(new Throwable("Failed sending test command"));
         }
+    }
+
+    @ReactMethod
+    public void sendCommand(ReadableArray commandArray, Promise promise) {
+        try {
+            byte[] command = new byte[commandArray.size()];
+            for (int i = 0; i < commandArray.size(); i++) {
+                command[i] = (byte) commandArray.getInt(i);
+            }
+
+            byte[] response = sendCommand(command);
+
+            WritableArray responseArray = Arguments.createArray();
+            for (byte b : response) {
+                responseArray.pushInt(b & 0xFF);
+            }
+
+            promise.resolve(responseArray);
+        } catch (Exception e) {
+            Log.e(TAG, "Sending command from bridge didn't work");
+            promise.reject("ERROR", e.getMessage());
+        }
+    }
+
+    public byte[] sendCommand(byte[] command) throws FTException {
+        return ftReader.readerXfr(device.getDeviceName(), 0, command);
     }
 
 
