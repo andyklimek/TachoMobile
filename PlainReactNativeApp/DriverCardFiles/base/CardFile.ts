@@ -2,12 +2,10 @@ import {DataMapper} from '../utils/DataMapper';
 
 type BytePositionSlice = [number, number];
 type decoderFunction = (data: number[]) => any;
-// type mapperFunction = (data: string) => any;
 
 interface DataField {
   position: BytePositionSlice;
   decoder: decoderFunction;
-  //   mapper?: mapperFunction;
 }
 
 interface DataFields {
@@ -198,27 +196,6 @@ export class CardFile {
     return parseInt(byteData.join(''), 10);
   };
 
-  // decodeToDate = (encodedData: number[], onlyDate = false): string => {
-  //   if (encodedData.length !== 4) {
-  //     throw new Error(
-  //       'encodedData must be exactly 4 bytes long to decode into a date.',
-  //     );
-  //   }
-
-  //   const hexString = this.decodeOctetString(encodedData);
-
-  //   if (!onlyDate) {
-  //     const timestamp = parseInt(hexString, 16);
-  //     const date = new Date(timestamp * 1000);
-  //     return date.toISOString();
-  //   } else {
-  //     const year = parseInt(hexString.slice(0, 4), 16);
-  //     const month = parseInt(hexString.slice(4, 6), 16);
-  //     const day = parseInt(hexString.slice(6, 8), 16);
-  //     const date = new Date(year, month - 1, day);
-  //     return date.toISOString().split('T')[0].trim();
-  //   }
-  // };
   decodeToDate = (encodedData: number[], onlyDate = false): string => {
     if (encodedData.length !== 4) {
       throw new Error(

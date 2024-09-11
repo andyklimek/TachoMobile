@@ -65,7 +65,6 @@ const useCardReader = () => {
         const deviceList = await CardReader.getDeviceListPromise();
         readerResp = await CardReader.connectReader(deviceList[0]);
       } else {
-        // const {CardReader} = NativeModules;
         readerResp = await CardReader.connectToUsbReader();
       }
       setConnection(readerResp);
@@ -224,7 +223,6 @@ const useCardReader = () => {
   const readCardData = async () => {
     for (let file of headerFiles) {
       await file.readData();
-      // console.log(file.decodedData);
       dddString += file.dddFormat;
 
       if (filesForDriverCard.includes(file.name)) {
@@ -236,7 +234,6 @@ const useCardReader = () => {
 
     for (let file of tachographFiles) {
       await file.readData();
-      // console.log(file.decodedData);
       dddString += file.dddFormat;
 
       if (filesForReport.includes(file.name)) {
@@ -266,21 +263,13 @@ const useCardReader = () => {
       const response = await axiosInstance.post('/ddd/mobile/', {
         file: dddString,
       });
-      // console.log('File sent to server');
 
       const {id} = response.data;
       dataForPostRequest.ddd_file_id = id;
 
       await createDriverCardIfNeeded(dataForDriverCardPostRequest);
-      // console.log('Driver card created');
-
-      // console.log(JSON.stringify(dataForPostRequest));
       await axiosInstance.post('/report/', JSON.stringify(dataForPostRequest));
     } catch (err) {
-      // console.log(err);
-      // console.log(err.request);
-      // console.log(err.data);
-      // console.log(err.message);
       throw new Error(err);
     }
   };

@@ -18,8 +18,6 @@ const languageDetector = {
   detect: callback => {
     AsyncStorage.getItem('user-language', (err, language) => {
       if (err || !language) {
-        // eslint-disable-next-line no-console
-        console.error('Error detecting language:', err);
         callback('pl');
       } else {
         callback(language);
@@ -28,10 +26,7 @@ const languageDetector = {
   },
   init: () => {},
   cacheUserLanguage: language => {
-    AsyncStorage.setItem('user-language', language).catch(err =>
-      // eslint-disable-next-line no-console
-      console.error('Error caching user language:', err),
-    );
+    AsyncStorage.setItem('user-language', language);
   },
 };
 
