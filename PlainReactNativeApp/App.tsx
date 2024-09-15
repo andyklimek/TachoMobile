@@ -3,6 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {styled} from 'nativewind';
 import 'intl-pluralrules';
+import Orientation from 'react-native-orientation-locker';
 import {View, AppState} from 'react-native';
 import {
   LoginScreen,
@@ -43,6 +44,8 @@ const App = () => {
       'change',
       handleAppStateChange,
     );
+
+    Orientation.lockToPortrait();
 
     return () => {
       subscription.remove();
