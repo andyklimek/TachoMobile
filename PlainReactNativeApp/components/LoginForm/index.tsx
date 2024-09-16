@@ -1,12 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {
-  View,
-  TextInput,
-  Text,
-  KeyboardAvoidingView,
-  Platform,
-  NativeModules,
-} from 'react-native';
+import React, {useState} from 'react';
+import {View, TextInput, Text} from 'react-native';
 import {Controller} from 'react-hook-form';
 import {styled} from 'nativewind';
 import {ChevronRight} from 'lucide-react-native';
@@ -20,7 +13,6 @@ import {useTranslation} from 'react-i18next';
 const StyledView = styled(View);
 const StyledTextInput = styled(TextInput);
 const StyledText = styled(Text);
-const StyledKeyboardAvoidingView = styled(KeyboardAvoidingView);
 
 const LoginForm = () => {
   const {control, handleSubmit, errors} = useCustomForm(schema, defaultValues);
@@ -43,57 +35,56 @@ const LoginForm = () => {
   };
 
   return (
-    <StyledKeyboardAvoidingView
-      className="w-full px-4"
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <StyledView>
-        {errors.password || errors.username || error ? (
-          <StyledText className="text-red-400 text-center mb-4">
-            {t('Niepoprawna nazwa użytkownika lub hasło')}
-          </StyledText>
-        ) : (
-          <StyledText className="text-center text-darkBlue mb-4"> </StyledText>
+    <StyledView className="w-full px-4">
+      {errors.password || errors.username || error ? (
+        <StyledText className="text-red-400 text-center mb-4">
+          {t('Niepoprawna nazwa użytkownika lub hasło')}
+        </StyledText>
+      ) : (
+        <StyledText className="text-center text-darkBlue mb-4"> </StyledText>
+      )}
+
+      <Controller
+        control={control}
+        name="username"
+        render={({field: {onChange, onBlur, value}}) => (
+          <StyledTextInput
+            className="bg-lightBeige rounded-xl px-2 py-4 mb-4"
+            placeholder={t('Nazwa użytkownika')}
+            placeholderTextColor="#000"
+            onBlur={onBlur}
+            onChangeText={onChange}
+            autoCapitalize="none"
+            value={value}
+          />
         )}
-        <Controller
-          control={control}
-          name="username"
-          render={({field: {onChange, onBlur, value}}) => (
-            <StyledTextInput
-              className="bg-lightBeige rounded-xl px-2 py-4 mb-4"
-              placeholder={t('Nazwa użytkownika')}
-              placeholderTextColor="#000"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-            />
-          )}
-        />
+      />
 
-        <Controller
-          control={control}
-          name="password"
-          render={({field: {onChange, onBlur, value}}) => (
-            <StyledTextInput
-              className="bg-lightBeige rounded-xl px-2 py-4 mb-4"
-              placeholder={t('Hasło')}
-              placeholderTextColor="#000"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              secureTextEntry
-            />
-          )}
-        />
+      <Controller
+        control={control}
+        name="password"
+        render={({field: {onChange, onBlur, value}}) => (
+          <StyledTextInput
+            className="bg-lightBeige rounded-xl px-2 py-4 mb-4"
+            placeholder={t('Hasło')}
+            placeholderTextColor="#000"
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+            autoCapitalize="none"
+            secureTextEntry
+          />
+        )}
+      />
 
-        <Button
-          text={t('Zaloguj')}
-          loading={loading}
-          className="mt-4 bg-lightPurple shadow-md py-3 rounded-full text-darkPurple"
-          icon={<ChevronRight className="text-white" size={28} />}
-          onPress={handleSubmit(onSubmit)}
-        />
-      </StyledView>
-    </StyledKeyboardAvoidingView>
+      <Button
+        text={t('Zaloguj')}
+        loading={loading}
+        className="mt-4 bg-lightPurple shadow-md py-3 rounded-full text-darkPurple"
+        icon={<ChevronRight className="text-white" size={28} />}
+        onPress={handleSubmit(onSubmit)}
+      />
+    </StyledView>
   );
 };
 
