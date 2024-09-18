@@ -1,42 +1,54 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   TextInput,
   Text,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import {Controller} from 'react-hook-form';
 import {styled} from 'nativewind';
 import useCustomForm from '@/hooks/useCustomForm';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {schema, defaultValues} from './utils';
+import {schema} from './utils';
 import {useTranslation} from 'react-i18next';
+import useUserData from '../../hooks/useUserData';
 
 const StyledView = styled(View);
 const StyledTextInput = styled(TextInput);
 const StyledText = styled(Text);
 const StyledKeyboardAvoidingView = styled(KeyboardAvoidingView);
 
-const MailForm = () => {
-  const [formDefaultValues, setFormDefaultValues] = useState(defaultValues);
-  const {control, errors} = useCustomForm(schema, formDefaultValues);
+interface MailFormProps {
+  onEmailChange: (email: string) => void;
+  userEmail: string;
+}
+
+const MailForm: React.FC<MailFormProps> = ({onEmailChange, userEmail}) => {
   const {t} = useTranslation();
 
-  useEffect(() => {
-    const getStoredEmail = async () => {
-      try {
-        const email = await AsyncStorage.getItem('email');
-        if (email !== null) {
-          setFormDefaultValues(prev => ({...prev, email}));
-        }
-      } catch (error) {
-        console.error('Error retrieving email from AsyncStorage:', error);
-      }
-    };
+  const formDefaultValues = {
+    email: userEmail || '',
+  };
 
-    getStoredEmail();
-  }, []);
+  const {control, errors, setValue, watch} = useCustomForm(
+    schema,
+    formDefaultValues,
+  );
+
+  const emailValue = watch('email');
+
+  useEffect(() => {
+    if (emailValue) {
+      onEmailChange(emailValue);
+    }
+  }, [emailValue, onEmailChange]);
+
+  useEffect(() => {
+    if (userEmail) {
+      setValue('email', userEmail);
+    }
+  }, [userEmail, setValue]);
 
   return (
     <StyledKeyboardAvoidingView
@@ -53,6 +65,7 @@ const MailForm = () => {
         ) : (
           <StyledText className="text-center text-darkBlue mb-4"> </StyledText>
         )}
+
         <Controller
           control={control}
           name="email"
@@ -62,10 +75,7 @@ const MailForm = () => {
               placeholder={t('Email')}
               placeholderTextColor="#000"
               onBlur={onBlur}
-              onChangeText={text => {
-                onChange(text);
-                AsyncStorage.setItem('email', text);
-              }}
+              onChangeText={onChange}
               value={value}
             />
           )}

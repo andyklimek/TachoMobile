@@ -28,7 +28,7 @@ const LoginScreen = () => {
           contentContainerStyle={{flexGrow: 1}}
           keyboardShouldPersistTaps="handled"
           style={{backgroundColor: '#2D2A57'}}>
-          <StyledView className="flex-1 justify-center items-center bg-darkPurple py-4">
+          <StyledView className="flex-1 justify-start items-center bg-darkPurple py-24">
             <StyledText className="text-slate-200 text-3xl mb-4 font-light">
               {t('Logowanie')}
             </StyledText>

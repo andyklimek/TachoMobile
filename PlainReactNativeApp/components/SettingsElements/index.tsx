@@ -4,6 +4,7 @@ import {styled} from 'nativewind';
 import Logout from '@/components/Logout';
 import LangSelector from '@/components/LangSelector';
 import Faq from '@/components/Faq';
+import Mail from '@/components/Mail';
 
 const StyledView = styled(View);
 
@@ -15,6 +16,7 @@ const SettingsElements = () => {
         <Faq />
       </StyledView>
       <StyledView className="flex-1 flex-row w-full justify-between">
+        <Mail />
         <Logout />
       </StyledView>
     </StyledView>

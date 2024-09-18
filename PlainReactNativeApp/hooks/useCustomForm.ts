@@ -6,6 +6,9 @@ const useCustomForm = (schema: ZodSchema, defaultValues: any = {}) => {
     control,
     handleSubmit,
     formState: {errors},
+    setValue,
+    reset,
+    watch,
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues,
@@ -15,6 +18,9 @@ const useCustomForm = (schema: ZodSchema, defaultValues: any = {}) => {
     control,
     handleSubmit,
     errors,
+    setValue,
+    reset,
+    watch,
   };
 };
 
