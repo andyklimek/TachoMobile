@@ -18,7 +18,7 @@ import {
   SpecificConditions,
   CurrentUsage,
   ControlActivityData,
-} from '@/DriverCardFiles/files/DriverCardFiles';
+} from '@/DriverCardFiles/files/DriverCardFilesG01';
 import axiosInstance from '@/utils/axiosConfig';
 
 const useCardReader = () => {
