@@ -87,6 +87,7 @@ const CardReaderScreen = () => {
       handleRetry();
     } else {
       setLoading(true);
+      setSuccess(false);
       try {
         await connectReader();
         await readCardData();
@@ -101,8 +102,8 @@ const CardReaderScreen = () => {
   };
 
   const renderIcon = () => {
-    if (bluetoothState === 'PoweredOn') {
-      return <Bluetooth size={72} className="text-darkPurple mb-4" />;
+    if (error.length > 0) {
+      return <RotateCw size={72} className="text-darkPurple mb-4" />;
     }
 
     if (loading) {
@@ -113,8 +114,8 @@ const CardReaderScreen = () => {
       return <MailCheck size={72} className="text-darkPurple mb-4" />;
     }
 
-    if (error) {
-      return <RotateCw size={72} className="text-darkPurple mb-4" />;
+    if (bluetoothState === 'PoweredOn') {
+      return <Bluetooth size={72} className="text-darkPurple mb-4" />;
     }
 
     return <ScanEye size={72} className="text-darkPurple mb-4" />;
